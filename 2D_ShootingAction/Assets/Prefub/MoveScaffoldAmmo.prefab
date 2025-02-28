@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6153264701324583130}
   - component: {fileID: 7715887188634108548}
+  - component: {fileID: 2419946435670317549}
   m_Layer: 0
   m_Name: MoveScaffoldAmmo
   m_TagString: MoveScaffold
@@ -77,7 +78,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.33360156, g: 0.2806052, b: 0.98490566, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -87,3 +88,16 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &2419946435670317549
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6699530478009525695}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af02615454ab3a44b9ef61ef3f30f987, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ammoSpeed: 5
