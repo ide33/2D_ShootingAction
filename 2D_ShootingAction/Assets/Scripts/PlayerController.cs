@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
@@ -10,9 +11,11 @@ public class PlayerController : MonoBehaviour
     [SerializeField] GameObject MoveScaffoldAmmo;  // 移動足場のプレハブ
     [SerializeField] GameObject CannonAmmo;  // 大砲のプレハブ
     [SerializeField] Transform shootPoint;  // 弾の発射位置
+    [SerializeField] BulletShotStructure standBullet;  // 足場弾のスクリプタブルオブジェクト
+    [SerializeField] BulletShotStructure cannonBullet;  // 大砲弾のスクリプタブルオブジェクト
+    [SerializeField] BulletShotStructure moovStandBullet;  // 移動足場弾のスクリプタブルオブジェクト
 
     private bool isGround = false;  // 地面にいるかどうか
-    // private bool isAttackable = false;  // 攻撃可能かどうか
     private Rigidbody2D rb2d;  // Rigidbodyの変数
     private SpriteRenderer spriteRenderer;  // スプライトの変数
 
@@ -21,19 +24,10 @@ public class PlayerController : MonoBehaviour
         lastAttack = 0f;  // 最後の攻撃の値を初期化
         rb2d = GetComponent<Rigidbody2D>();  // Rigidbodyを取得
         spriteRenderer = GetComponent<SpriteRenderer>(); // spriteRendererの初期化
-        // isAttackable = true;  // 攻撃可能
     }
 
     void Update()
     {
-        // //  攻撃不可のとき
-        // if (isAttackable == false)
-        // {
-        //     // 経過時間を足す
-        //     lastAttack += Time.deltaTime;
-        //     Debug.Log("クールタイム中");
-        // }
-
         // スペースキーが押され、地面にいるとき
         if (Input.GetKeyDown(KeyCode.Space) && isGround)
         {
@@ -54,37 +48,64 @@ public class PlayerController : MonoBehaviour
             spriteRenderer.flipX = true;  //スプライトを左右反転した向きで表示
         }
 
-        // if (lastAttack >= shootCoolTime)
-        // {
-            // isAttackable = true;
-            // Debug.Log("攻撃可能");
-
-            // jキーが押されたら
-            if (Input.GetKeyDown(KeyCode.J))
+        // wキーが押されたら
+        if (Input.GetKey(KeyCode.W))
+        {
+            if (Input.GetKeyDown(KeyCode.J))  // jキーが押されたら
             {
+                standBullet.UpwardFirinig(shootPoint, speed);
                 Instantiate(ScaffoldAmmo, shootPoint.position, transform.rotation);   // 足場弾を生成
-                // isAttackable = false;  // 攻撃不可
-                // Debug.Log("クールタイムに入ります");
             }
-
-            // kキーが押されたら
-            if (Input.GetKeyDown(KeyCode.K))
-            {
-                Instantiate(MoveScaffoldAmmo, shootPoint.position, transform.rotation);  // 移動足場弾を生成
-                // isAttackable = false;  // 攻撃不可
-                // Debug.Log("クールタイムに入ります");
-            }
-
-            // lキーが押されたら
-            if (Input.GetKeyDown(KeyCode.L))
+            else if (Input.GetKeyDown(KeyCode.L))  // lキーが押されたら
             {
                 Instantiate(CannonAmmo, shootPoint.position, transform.rotation);  // 大砲弾を生成
-                // isAttackable = false;  // 攻撃不可
-                // Debug.Log("クールタイムに入ります");
+                cannonBullet.UpwardFirinig(shootPoint, speed);
             }
+            else if (Input.GetKeyDown(KeyCode.K))  // kキーが押されたら
+            {
+                Instantiate(MoveScaffoldAmmo, shootPoint.position, transform.rotation);  // 移動足場弾を生成
+                moovStandBullet.UpwardFirinig(shootPoint, speed);
+            }
+        }
 
-        // }
+        // sキーが押されたら
+        else if (Input.GetKey(KeyCode.S))
+        {
+            if (Input.GetKeyDown(KeyCode.J))  // jキーが押されたら
+            {
+                standBullet.DownwardFirinig(shootPoint, speed);
+                Instantiate(ScaffoldAmmo, shootPoint.position, transform.rotation);   // 足場弾を生成
+            }
+            else if (Input.GetKeyDown(KeyCode.L))  // lキーが押されたら
+            {
+                Instantiate(CannonAmmo, shootPoint.position, transform.rotation);  // 大砲弾を生成
+                cannonBullet.DownwardFirinig(shootPoint, speed);
+            }
+            else if (Input.GetKeyDown(KeyCode.K))  // kキーが押されたら
+            {
+                Instantiate(MoveScaffoldAmmo, shootPoint.position, transform.rotation);  // 移動足場弾を生成
+                moovStandBullet.DownwardFirinig(shootPoint, speed);
+            }
+        }
 
+        else
+        {
+            if (Input.GetKeyDown(KeyCode.J))  // jキーが押されたら
+            {
+                standBullet.ForwardFirinig(shootPoint, speed);
+                Instantiate(ScaffoldAmmo, shootPoint.position, transform.rotation);   // 足場弾を生成
+            }
+            else if (Input.GetKeyDown(KeyCode.L))  // lキーが押されたら
+            {
+                Instantiate(CannonAmmo, shootPoint.position, transform.rotation);  // 大砲弾を生成
+                cannonBullet.ForwardFirinig(shootPoint, speed);
+            }
+            else if (Input.GetKeyDown(KeyCode.K))  // kキーが押されたら
+            {
+                Instantiate(MoveScaffoldAmmo, shootPoint.position, transform.rotation);  // 移動足場弾を生成
+                moovStandBullet.ForwardFirinig(shootPoint, speed);
+            }
+        }
     }
 
     void OnCollisionStay2D(Collision2D collision)

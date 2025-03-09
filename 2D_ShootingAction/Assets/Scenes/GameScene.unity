@@ -328,10 +328,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 5
   jumpForce: 7
+  shootCoolTime: 0.5
+  lastAttack: 0
   ScaffoldAmmo: {fileID: 835790417105974049, guid: d18a0f4750203804d9456fe61e8210ff, type: 3}
   MoveScaffoldAmmo: {fileID: 6699530478009525695, guid: 1626f763a8a0cb5458c464a74f2a8f89, type: 3}
   CannonAmmo: {fileID: 1557515865136019865, guid: a0eb9e1f319b76a46bf1fd360335cf03, type: 3}
   shootPoint: {fileID: 156894548}
+  standBullet: {fileID: 11400000, guid: faf8848b96f78b74a869ee608b29c88d, type: 2}
+  cannonBullet: {fileID: 0}
+  moovStandBullet: {fileID: 0}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
