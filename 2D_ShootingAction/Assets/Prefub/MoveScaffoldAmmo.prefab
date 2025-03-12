@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 6153264701324583130}
   - component: {fileID: 7715887188634108548}
-  - component: {fileID: 2419946435670317549}
   - component: {fileID: -3286094849369633486}
   m_Layer: 0
   m_Name: MoveScaffoldAmmo
@@ -89,19 +88,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &2419946435670317549
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6699530478009525695}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: af02615454ab3a44b9ef61ef3f30f987, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ammoSpeed: 5
 --- !u!50 &-3286094849369633486
 Rigidbody2D:
   serializedVersion: 5

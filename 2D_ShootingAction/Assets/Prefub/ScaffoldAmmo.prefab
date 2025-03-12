@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 3321925435885687362}
   - component: {fileID: 2955174228987265719}
-  - component: {fileID: -2358925312472689493}
   - component: {fileID: 1601356364529061954}
   m_Layer: 0
   m_Name: ScaffoldAmmo
@@ -28,7 +27,7 @@ Transform:
   m_GameObject: {fileID: 835790417105974049}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.09, y: -1.74, z: 0}
+  m_LocalPosition: {x: -0.76415384, y: -1.74, z: 0}
   m_LocalScale: {x: 0.3, y: 0.3, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -89,19 +88,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &-2358925312472689493
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 835790417105974049}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: af02615454ab3a44b9ef61ef3f30f987, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ammoSpeed: 5
 --- !u!50 &1601356364529061954
 Rigidbody2D:
   serializedVersion: 5
@@ -117,7 +103,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDamping: 0
   m_AngularDamping: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 0
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
