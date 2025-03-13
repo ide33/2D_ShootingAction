@@ -5,18 +5,14 @@ public class PlayerController : MonoBehaviour
 {
     [SerializeField] private float speed = 5f;  // プレイヤーの速度
     [SerializeField] private float jumpForce = 5f;  // ジャンプの強さ
-    [SerializeField] private float ammoSpeed = 5f;  // 弾の速度
-    [SerializeField] private float shootCoolTime = 0.5f;  // 攻撃のクールタイム
-    [SerializeField] private float lastAttack = 0.0f;  // 最後に攻撃した時間
-    [SerializeField] GameObject ScaffoldAmmo;  // 足場のプレハブ
-    [SerializeField] GameObject MoveScaffoldAmmo;  // 移動足場のプレハブ
-    [SerializeField] GameObject CannonAmmo;  // 大砲のプレハブ
+    [SerializeField] private float shootCoolTime = 0.3f;  // 攻撃のクールタイム
     [SerializeField] Transform shootPoint;  // 弾の発射位置
     [SerializeField] BulletShotStructure standBullet;  // 足場弾のスクリプタブルオブジェクト
     [SerializeField] BulletShotStructure cannonBullet;  // 大砲弾のスクリプタブルオブジェクト
     [SerializeField] BulletShotStructure moovStandBullet;  // 移動足場弾のスクリプタブルオブジェクト
 
     private bool isGround = false;  // 地面にいるかどうか
+    private float lastAttack;  // 最後に攻撃した時間
     private Rigidbody2D rb2d;  // Rigidbodyの変数
     private SpriteRenderer spriteRenderer;  // スプライトの変数
 
@@ -51,61 +47,74 @@ public class PlayerController : MonoBehaviour
             spriteRenderer.flipX = true;  //スプライトを左右反転した向きで表示
         }
 
-        // wキーが押されたら
-        if (Input.GetKey(KeyCode.W))
+        // 発射位置の調整
+        float shootOffsetX = 0.6f;  // 弾の発射位置のオフセット(右向き)
+        if (spriteRenderer.flipX)
         {
-            if (Input.GetKeyDown(KeyCode.J))  // jキーが押されたら
-            {
-                Instantiate(ScaffoldAmmo, shootPoint.position, transform.rotation);   // 足場弾を生成
-                standBullet.UpwardFirinig(shootPoint, speed, direction);
-            }
-            else if (Input.GetKeyDown(KeyCode.L))  // lキーが押されたら
-            {
-                Instantiate(CannonAmmo, shootPoint.position, transform.rotation);  // 大砲弾を生成
-                cannonBullet.UpwardFirinig(shootPoint, speed, direction);
-            }
-            else if (Input.GetKeyDown(KeyCode.K))  // kキーが押されたら
-            {
-                Instantiate(MoveScaffoldAmmo, shootPoint.position, transform.rotation);  // 移動足場弾を生成
-                moovStandBullet.UpwardFirinig(shootPoint, speed, direction);
-            }
+            shootOffsetX = -0.6f;  // 左向きの場合、反対側に移動
         }
+        shootPoint.localPosition = new Vector3(shootOffsetX, 0.3f, 0);
 
-        // sキーが押されたら
-        else if (Input.GetKey(KeyCode.S))
+        // クールタイムをチェック
+        if (Time.time - lastAttack >= shootCoolTime)
         {
-            if (Input.GetKeyDown(KeyCode.J))  // jキーが押されたら
+            // wキーが押されたら
+            if (Input.GetKey(KeyCode.W))
             {
-                Instantiate(ScaffoldAmmo, shootPoint.position, transform.rotation);   // 足場弾を生成
-                standBullet.DownwardFirinig(shootPoint, speed, direction);
+                if (Input.GetKeyDown(KeyCode.J))  // jキーが押されたら
+                {
+                    standBullet.UpwardFirinig(shootPoint, speed, direction);
+                    lastAttack = Time.time;
+                }
+                else if (Input.GetKeyDown(KeyCode.L))  // lキーが押されたら
+                {
+                    cannonBullet.UpwardFirinig(shootPoint, speed, direction);
+                    lastAttack = Time.time;
+                }
+                else if (Input.GetKeyDown(KeyCode.K))  // kキーが押されたら
+                {
+                    moovStandBullet.UpwardFirinig(shootPoint, speed, direction);
+                    lastAttack = Time.time;
+                }
             }
-            else if (Input.GetKeyDown(KeyCode.L))  // lキーが押されたら
-            {
-                Instantiate(CannonAmmo, shootPoint.position, transform.rotation);  // 大砲弾を生成
-                cannonBullet.DownwardFirinig(shootPoint, speed, direction);
-            }
-            else if (Input.GetKeyDown(KeyCode.K))  // kキーが押されたら
-            {
-                Instantiate(MoveScaffoldAmmo, shootPoint.position, transform.rotation);  // 移動足場弾を生成
-                moovStandBullet.DownwardFirinig(shootPoint, speed, direction);
-            }
-        }
 
-        else
-        {
-            if (Input.GetKeyDown(KeyCode.J))  // jキーが押されたら
+            // sキーが押されたら
+            else if (Input.GetKey(KeyCode.S))
             {
-                standBullet.ForwardFirinig(shootPoint, speed, direction);
+                if (Input.GetKeyDown(KeyCode.J))  // jキーが押されたら
+                {
+                    standBullet.DownwardFirinig(shootPoint, speed, direction);
+                    lastAttack = Time.time;
+                }
+                else if (Input.GetKeyDown(KeyCode.L))  // lキーが押されたら
+                {
+                    cannonBullet.DownwardFirinig(shootPoint, speed, direction);
+                    lastAttack = Time.time;
+                }
+                else if (Input.GetKeyDown(KeyCode.K))  // kキーが押されたら
+                {
+                    moovStandBullet.DownwardFirinig(shootPoint, speed, direction);
+                    lastAttack = Time.time;
+                }
             }
-            else if (Input.GetKeyDown(KeyCode.L))  // lキーが押されたら
+
+            else
             {
-                Instantiate(CannonAmmo, shootPoint.position, transform.rotation);  // 大砲弾を生成
-                cannonBullet.ForwardFirinig(shootPoint, speed, direction);
-            }
-            else if (Input.GetKeyDown(KeyCode.K))  // kキーが押されたら
-            {
-                Instantiate(MoveScaffoldAmmo, shootPoint.position, transform.rotation);  // 移動足場弾を生成
-                moovStandBullet.ForwardFirinig(shootPoint, speed, direction);
+                if (Input.GetKeyDown(KeyCode.J))  // jキーが押されたら
+                {
+                    standBullet.ForwardFirinig(shootPoint, speed, direction);
+                    lastAttack = Time.time;
+                }
+                else if (Input.GetKeyDown(KeyCode.L))  // lキーが押されたら
+                {
+                    cannonBullet.ForwardFirinig(shootPoint, speed, direction);
+                    lastAttack = Time.time;
+                }
+                else if (Input.GetKeyDown(KeyCode.K))  // kキーが押されたら
+                {
+                    moovStandBullet.ForwardFirinig(shootPoint, speed, direction);
+                    lastAttack = Time.time;
+                }
             }
         }
     }

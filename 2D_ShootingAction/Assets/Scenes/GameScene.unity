@@ -242,7 +242,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!212 &438735125
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -328,8 +328,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 5
   jumpForce: 7
+  ammoSpeed: 5
   shootCoolTime: 0.5
-  lastAttack: 0
   ScaffoldAmmo: {fileID: 835790417105974049, guid: d18a0f4750203804d9456fe61e8210ff, type: 3}
   MoveScaffoldAmmo: {fileID: 6699530478009525695, guid: 1626f763a8a0cb5458c464a74f2a8f89, type: 3}
   CannonAmmo: {fileID: 1557515865136019865, guid: a0eb9e1f319b76a46bf1fd360335cf03, type: 3}
@@ -569,6 +569,10 @@ PrefabInstance:
     - target: {fileID: 459424109917855946, guid: 96587e1a803c2d64c97d20b23dc73322, type: 3}
       propertyPath: m_Name
       value: Ground
+      objectReference: {fileID: 0}
+    - target: {fileID: 3987780941365741323, guid: 96587e1a803c2d64c97d20b23dc73322, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5469579200532099499, guid: 96587e1a803c2d64c97d20b23dc73322, type: 3}
       propertyPath: m_LocalPosition.x
