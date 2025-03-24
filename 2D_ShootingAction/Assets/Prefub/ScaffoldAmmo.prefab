@@ -176,8 +176,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Stand: {fileID: 7748992973672167008, guid: 64d8c6b3b48fa1d43bcf238aa30334f5, type: 3}
-  checkSize: {x: 2, y: 0.5}
-  groundLayer:
-    serializedVersion: 2
-    m_Bits: 64
+  checkRadius: 0.5
   offset: 0.1
