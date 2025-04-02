@@ -1,3 +1,4 @@
+using UnityEditor.Tilemaps;
 using UnityEngine;
 
 public class RushEnemy : MonoBehaviour
@@ -29,11 +30,22 @@ public class RushEnemy : MonoBehaviour
         // プレイヤーとの距離を計算
         float distance = Vector2.Distance(mypos, playerpos);
 
+        // プレイヤーの方向を取得
+        float directionToPlayer = Mathf.Sign(playerpos.x - mypos.x);  // -1(左) or 1(右)
+
         // プレイヤーが近かったら
         if (distance < rushDistance && !isRushing)
         {
             Debug.Log("突進");
-            speed += rushSpeed;
+
+            // プレイヤーの方向を向く処理
+            if (directionToPlayer != Mathf.Sign(transform.localScale.x))
+            {
+                Debug.Log("振り向き");
+                Flip();
+            }
+
+            speed += rushSpeed;  // 突進速度を適用
             isRushing = true;  // 突進中
             rushStartTime = Time.time;  // 突進開始時間を記録
         }
@@ -52,7 +64,7 @@ public class RushEnemy : MonoBehaviour
     void PatorolMovement()
     {
         // 一定時間経過したら方向転換
-        if (Time.time - startMove >= moveTime)
+        if (Time.time - startMove >= moveTime && !isRushing)
         {
             direction *= -1;  // 方向転換
             startMove = Time.time;  // 移動開始時間を更新
@@ -60,5 +72,14 @@ public class RushEnemy : MonoBehaviour
 
         // 現在の方向に移動
         rb.linearVelocity = new Vector2(direction * speed, rb.linearVelocity.y);
+    }
+
+    // 方向転換メソッド
+    void Flip()
+    {
+        Vector3 newScale = transform.localScale;
+        newScale.x *= -1;
+        transform.localScale = newScale;
+        direction *= -1;  // 移動方向も反転
     }
 }
