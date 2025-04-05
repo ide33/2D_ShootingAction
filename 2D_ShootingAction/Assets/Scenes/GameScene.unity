@@ -588,9 +588,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetPlayer: {fileID: 438735122}
   rushDistance: 8
-  moveTime: 5
-  speed: 2
+  patrolTime: 5
+  normalSpeed: 2
   rushSpeed: 4
+  rushDuration: 2
 --- !u!61 &1067814718
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -819,6 +820,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Ground (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 459424109917855946, guid: 96587e1a803c2d64c97d20b23dc73322, type: 3}
+      propertyPath: m_TagString
+      value: Wall
+      objectReference: {fileID: 0}
     - target: {fileID: 5469579200532099499, guid: 96587e1a803c2d64c97d20b23dc73322, type: 3}
       propertyPath: m_LocalScale.x
       value: 4.687394
@@ -829,7 +834,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5469579200532099499, guid: 96587e1a803c2d64c97d20b23dc73322, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 14.05
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 5469579200532099499, guid: 96587e1a803c2d64c97d20b23dc73322, type: 3}
       propertyPath: m_LocalPosition.y

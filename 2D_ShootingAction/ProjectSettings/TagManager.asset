@@ -11,6 +11,7 @@ TagManager:
   - SA
   - MoveScaffold
   - Enemy
+  - Wall
   layers:
   - Default
   - TransparentFX
