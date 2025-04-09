@@ -569,7 +569,7 @@ GameObject:
   - component: {fileID: 1067814717}
   m_Layer: 0
   m_Name: rushEnemy
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -592,6 +592,7 @@ MonoBehaviour:
   normalSpeed: 2
   rushSpeed: 4
   rushDuration: 2
+  maxHealth: 3
 --- !u!61 &1067814718
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -729,8 +730,8 @@ Transform:
   m_GameObject: {fileID: 1067814716}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 5.29, y: -2.31, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 5.29, y: -2.0698, z: 0}
+  m_LocalScale: {x: 1, y: 1.4803402, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}

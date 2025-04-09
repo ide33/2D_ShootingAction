@@ -12,6 +12,15 @@ public class StandEntity : MonoBehaviour
         {
             GroundHitAmmo(collision);
         }
+        else if (collision.gameObject.CompareTag("Enemy"))
+        {
+            RushEnemy enemy = collision.gameObject.GetComponent<RushEnemy>();
+            if (enemy != null)
+            {
+                enemy.TakeDamage(1);
+            }
+            Destroy(gameObject);
+        }
     }
 
     void GroundHitAmmo(Collision2D collision)

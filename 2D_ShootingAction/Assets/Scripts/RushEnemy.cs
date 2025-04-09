@@ -10,10 +10,14 @@ public class RushEnemy : MonoBehaviour
     [SerializeField] private float normalSpeed = 2f;  // 移動速度
     [SerializeField] private float rushSpeed = 4f;  // 突進時の移動速度
     [SerializeField] private float rushDuration = 2f;  // 突進する時間
+    [SerializeField] private int maxHealth = 3;  // 最大HP
 
     private float patrolStartTime;  // 移動開始時間
     private float rushStartTime;  // 突進開始時間
+    private float stunEndTime = 0;  // スタン終了時間
+    private float rushCooldownEndTime = 0;  // 突進クールタイム終了時間
     private int direction = 1;  // 1:右へ移動, -1:左へ移動
+    private int currentHealth; // 現在のHP
     private bool isRushing = false;  // 突進中かどうか
     private bool isStopped = false;  // 停止中かどうか
 
@@ -23,10 +27,18 @@ public class RushEnemy : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();  // Rigidbody2Dを取得
         patrolStartTime = Time.time;  // ゲーム開始時の時間
+        currentHealth = maxHealth;  // HPを初期化
     }
 
     void Update()
     {
+        if (Time.time < stunEndTime)
+        {
+            // スタン中は動かない
+            rb.linearVelocity = Vector2.zero;
+            return;
+        }
+
         Vector2 mypos = transform.position;  // 自分の位置を取得
         Vector2 playerpos = targetPlayer.transform.position;  // プレイヤーの位置を取得
 
@@ -43,38 +55,26 @@ public class RushEnemy : MonoBehaviour
                 Debug.Log("突進終了");
                 isRushing = false;   // 突進状態をリセット
                 patrolStartTime = Time.time;  // パトロール再開の時間を更新
-                StartCoroutine(StopForSeconds(1f));  // 1秒停止
+                // StartCoroutine(StopForSeconds(1f));  // 1秒停止
             }
 
             Move();
             return;
         }
 
-        // プレイヤーが近かったら
-        if (distance < rushDistance && !isRushing)
+        // 突進できるかチェック
+        if (distance < rushDistance && Time.time > rushCooldownEndTime)
         {
-            Debug.Log("突進");
+            Debug.Log("突進開始");
 
-            // 振り向き
+            // 反転
             if ((directionToPlayer > 0 && transform.localScale.x < 0) || (directionToPlayer < 0 && transform.localScale.x > 0))
             {
                 Flip();
             }
-
-            Debug.Log("突進開始");
-            isRushing = true;  // 突進中
-            rushStartTime = Time.time;  // 突進開始時間を記録
+            isRushing = true;
+            rushStartTime = Time.time;
         }
-
-        // // 突進を一定時間後に終了
-        // if (isRushing && Time.time - rushStartTime >= rushDuration)
-        // {
-        //     Debug.Log("突進終了");
-        //     isRushing = false;   // 突進状態をリセット
-        //     patrolStartTime = Time.time;  // パトロール再開の時間を更新
-        //     StartCoroutine(StopForSeconds(1f));  // 1秒停止
-        // }
-
         Move();
     }
 
@@ -82,7 +82,7 @@ public class RushEnemy : MonoBehaviour
     {
         if (isStopped)
         {
-            Debug.Log("敵が停止しました");
+            // Debug.Log("敵が停止しました");
             rb.linearVelocity = Vector2.zero;
             return;  // 停止中は移動しない
         }
@@ -108,9 +108,36 @@ public class RushEnemy : MonoBehaviour
             // 突進中は停止しない
             if (!isRushing)
             {
-                Debug.Log("壁にぶつかった 停止");
-                StartCoroutine(StopForSeconds(1f));  // 1秒停止
+                Debug.Log("壁にぶつかった スタン");
+
+                isRushing = false;
+                rb.linearVelocity = Vector2.zero;
+                isStopped = true;
+
+                // スタン終了時間と突進禁止時間を記録
+                stunEndTime = Time.time + 4f;
+                rushCooldownEndTime = stunEndTime + 2f;
+
+                StartCoroutine(EndStunAndFlip(4f));  // 4秒停止
             }
+        }
+    }
+
+    private IEnumerator EndStunAndFlip(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        isStopped = false;
+        Flip();
+        patrolStartTime = Time.time;
+    }
+
+    public void TakeDamage(int damage)
+    {
+        currentHealth -= damage;
+        if (currentHealth <= 0)
+        {
+            Destroy(gameObject);
         }
     }
 
@@ -123,15 +150,5 @@ public class RushEnemy : MonoBehaviour
         transform.localScale = scale;
 
         direction *= -1;  // 移動方向を反転
-    }
-
-    // 一定時間停止
-    private IEnumerator StopForSeconds(float duration)
-    {
-        Debug.Log("敵が停止しました");
-        isStopped = true;  // 一時停止
-        rb.linearVelocity = Vector2.zero;  // 速度を0
-        yield return new WaitForSeconds(duration);  // 時間経過を待つ
-        isStopped = false;  // 停止終了
     }
 }
