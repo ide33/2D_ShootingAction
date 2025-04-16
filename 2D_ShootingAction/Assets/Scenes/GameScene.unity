@@ -566,7 +566,7 @@ GameObject:
   - component: {fileID: 1067814720}
   - component: {fileID: 1067814719}
   - component: {fileID: 1067814718}
-  - component: {fileID: 1067814717}
+  - component: {fileID: 1067814722}
   m_Layer: 0
   m_Name: rushEnemy
   m_TagString: Enemy
@@ -574,25 +574,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1067814717
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1067814716}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a8b58d9cbd419b149b2d39edbf5b27be, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  targetPlayer: {fileID: 438735122}
-  rushDistance: 8
-  patrolTime: 5
-  normalSpeed: 2
-  rushSpeed: 4
-  rushDuration: 2
-  maxHealth: 3
 --- !u!61 &1067814718
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -665,7 +646,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!212 &1067814720
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -736,6 +717,24 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1067814722
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1067814716}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 68fb549faaeb8af4686a416e3f260d45, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetPlayer: {fileID: 438735122}
+  normalSpeed: 2
+  rushSpeed: 4
+  rushStartDistance: 5
+  stunDuration: 4
+  maxHealth: 3
 --- !u!1001 &1275685184
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -835,11 +834,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5469579200532099499, guid: 96587e1a803c2d64c97d20b23dc73322, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 10
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 5469579200532099499, guid: 96587e1a803c2d64c97d20b23dc73322, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.7
+      value: -0.79
       objectReference: {fileID: 0}
     - target: {fileID: 5469579200532099499, guid: 96587e1a803c2d64c97d20b23dc73322, type: 3}
       propertyPath: m_LocalPosition.z

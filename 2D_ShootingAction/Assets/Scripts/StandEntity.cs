@@ -14,7 +14,7 @@ public class StandEntity : MonoBehaviour
         }
         else if (collision.gameObject.CompareTag("Enemy"))
         {
-            RushEnemy enemy = collision.gameObject.GetComponent<RushEnemy>();
+            RushingEnemy enemy = collision.gameObject.GetComponent<RushingEnemy>();
             if (enemy != null)
             {
                 enemy.TakeDamage(1);
