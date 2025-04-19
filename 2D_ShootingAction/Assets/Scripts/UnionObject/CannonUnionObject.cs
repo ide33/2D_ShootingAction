@@ -22,11 +22,12 @@ public class CannonUnionObject : MonoBehaviour, IUnionObject
     [SerializeField] private float SearchDistance = 8f;       // 索敵範囲の半径
     [SerializeField] private float SearchPointDistance = 10f; // 索敵範囲の中心の距離
     [SerializeField] private LayerMask TargetLayerMask;       // 狙う対象のレイヤー
-    
+
     // 内部処理する変数
     private GameObject targetEnemy;                       // 範囲内にいる狙う対象
     private bool isFired = false;                         // クールタイムが終わっているか判定
     private SpriteRenderer _spriteRenderer;               // 向き確認用
+    private int direction;                                // 発射する向き
 
     // ====================================================================
     // デバッグ用軌跡表示フィールド
@@ -37,8 +38,6 @@ public class CannonUnionObject : MonoBehaviour, IUnionObject
 
     void Awake()
     {
-        
-
         // trajectoryLine = GetComponent<LineRenderer>();
         // LineRendererが設定されていない場合は自動生成
         // if (trajectoryLine == null)
@@ -66,6 +65,14 @@ public class CannonUnionObject : MonoBehaviour, IUnionObject
 
         // クールタイムの計測を開始
         StartCoroutine(FireCoolTimeCount());
+
+        // 発射する向きをSpriteRendererの向きから取得
+        direction = _spriteRenderer.flipX ? -1 : 1;
+
+        // 発射位置のX軸の位置を向きに応じて反転
+        Vector3 localPosition = FiringPoint.transform.localPosition;
+        localPosition.y = Mathf.Abs(localPosition.y) * -direction; // Y軸を反転
+        FiringPoint.transform.localPosition = localPosition;
     }
 
     void FixedUpdate()
@@ -90,21 +97,9 @@ public class CannonUnionObject : MonoBehaviour, IUnionObject
             }
             else
             {
-                // 発射する向き（初期値：右）
-                int direction = 1;
-                if (_spriteRenderer.flipX == true)
-                {
-                    // 左向きの場合
-                    direction = -1;
-                }
-                else if (_spriteRenderer.flipX == false)
-                {
-                    // 右向きの場合
-                    direction = 1;
-                }
-
                 // 索敵範囲の終点に向けて発射
                 FireLaunch(new Vector3(this.transform.position.x + SearchDistance * 2 * direction, this.transform.position.y));
+                Debug.Log($"発射位置のX軸 : {this.transform.position.x + SearchDistance * 2 * direction}");
 
                 // クールタイムの計測を開始
                 StartCoroutine(FireCoolTimeCount());
@@ -115,12 +110,12 @@ public class CannonUnionObject : MonoBehaviour, IUnionObject
     // =========================================================
     // 索敵処理
     // =========================================================
-    
+
     // 敵をレイで探す
     private GameObject EnemySearchRay()
     {
         // 大砲の前方の位置
-        Vector2 searchRadiusCenter = transform.position + transform.up *  SearchPointDistance * -1;
+        Vector2 searchRadiusCenter = transform.position + transform.up * SearchPointDistance * -1 * direction;
         // 指定した範囲内の敵コライダーを検出
         Collider2D[] Enemies = Physics2D.OverlapCircleAll(searchRadiusCenter, SearchDistance, TargetLayerMask);
 
@@ -158,7 +153,7 @@ public class CannonUnionObject : MonoBehaviour, IUnionObject
         Gizmos.color = Color.red;
 
         // 索敵範囲の中心を計算
-        Vector2 searchRadiusCenter = transform.position + transform.up * SearchPointDistance * -1;
+        Vector2 searchRadiusCenter = transform.position + transform.up * SearchPointDistance * -1 * direction;
 
         // 索敵範囲をギズモで描画
         Gizmos.DrawWireSphere(searchRadiusCenter, SearchDistance);
@@ -173,7 +168,7 @@ public class CannonUnionObject : MonoBehaviour, IUnionObject
     {
         GameObject newCannonAmmo = Instantiate(CannonObjectAmmo, FiringPoint.transform.position, Quaternion.identity);
         Rigidbody2D rb = newCannonAmmo.GetComponent<Rigidbody2D>();
-        
+
         // 重力スケールを設定
         rb.gravityScale = GravityScale;
 
@@ -189,13 +184,13 @@ public class CannonUnionObject : MonoBehaviour, IUnionObject
         float height = targetPos.y - startPosition.y;
 
         // 飛行時間を計算
-        float flightTime = distance / InitialVelocityX;
+        float flightTime = distance / (InitialVelocityX * direction);
 
         // Y軸方向の初速度を計算
         float initialVelocityY = (height + 0.5f * gravity * flightTime * flightTime) / flightTime;
 
         // 初速度のベクトルを計算
-        Vector2 initialVelocity = new Vector2(InitialVelocityX, initialVelocityY);
+        Vector2 initialVelocity = new Vector2(InitialVelocityX * direction, initialVelocityY);
 
         // 速度を設定
         rb.linearVelocity = initialVelocity;

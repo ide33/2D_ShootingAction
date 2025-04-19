@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 908c52ce2297468449bf3158f654ea67, type: 3}
+  m_Name: FloatingBullet
+  m_EditorClassIdentifier: 
+  FloatingAmmo: {fileID: 4477580429161690651, guid: e5b30b8310c837e44ac87377dcf7c753, type: 3}
+  FloatingAmmoShotSpeed: 5
+  DestroyTime: 3
+  floatForce: 5
+  maxAmplitude: 0.5
+  UpwardFirinigAngle: 45
+  ForwardFirinigAngle: 0
+  DownwardFirinigAngle: -45

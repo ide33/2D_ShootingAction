@@ -37,7 +37,7 @@ public class FloatingUnionObject : MonoBehaviour, IUnionObject
         _rigidbody2D = GetComponent<Rigidbody2D>();
         _spriteRenderer = GetComponent<SpriteRenderer>();
 
-        // 移動する向き（初期値：右）
+        // 移動する向きをSpriteRendererの向きから取得
         direction = _spriteRenderer.flipX ? -1 : 1;
     }
 
@@ -86,13 +86,13 @@ public class FloatingUnionObject : MonoBehaviour, IUnionObject
         float colDirection = direction >= 1 ? col.bounds.max.x : col.bounds.min.x;
 
         // コライダーの移動方向の最下の位置を取得
-        Vector2 bottomPosition = new Vector2(colDirection, col.bounds.min.y);
+        Vector2 bottomPosition = new Vector2(colDirection, col.bounds.min.y + 0.1f);
 
         // 向きに応じた方向にレイを発射して、すぐ先に壁があるか判定
         _isWall = Physics2D.Raycast(bottomPosition, direction >= 1 ? Vector2.right : Vector2.left, rayLength, layerMask);
 
         // シーン上でレイを表示（緑で表示、判定取得で赤で表示）
-        Debug.DrawRay(bottomPosition, direction >= 1 ? Vector2.right : Vector2.left * rayLength, _isWall ? Color.green : Color.red);
+        Debug.DrawRay(bottomPosition, direction >= 1 ? Vector2.right * rayLength : Vector2.left * rayLength, _isWall ? Color.green : Color.red);
 
         return _isWall;
     }

@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc432adde8bf56844bdc7568814521b8, type: 3}
+  m_Name: CannonBullet
+  m_EditorClassIdentifier: 
+  CannonAmmo: {fileID: 856910960292903984, guid: c970d2eb70b60cf40b0d55c6ffc0b2fb, type: 3}
+  CannonAmmoShotSpeed: 5
+  DestroyTime: 3
+  UpwardForce: 10
+  UpwardFirinigAngle: 80
+  ForwardForce: 8
+  ForwardFirinigAngle: 45
+  DownwardForce: 5
+  DownwardFirinigAngle: 20

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,20 +8,48 @@ using UnityEngine;
 /// </summary>
 public class Ammo : MonoBehaviour
 {
-    [SerializeField] private GameObject UnionObject; // 足場オブジェクト
+    [SerializeField] private GameObject UnionObject; // 生成するオブジェクト
     [SerializeField] private float checkRadius = 0.5f; // 重なりチェック用の半径
     // [SerializeField] private float AttackPower = 10f; // 攻撃力
-    [SerializeField] private UnionData AmmoUnionData; // このオブジェクトの要素
+    [SerializeField] private UnionData AmmoUnionData; // この弾オブジェクトの合成要素
     [SerializeField] private CombinationRule combinationRule; // 合成ルールを設定
 
-    private void OnTriggerEnter2D(Collider2D other)
+    public Action<float> OnUpdateMoveAction; // 移動の更新アクション
+
+    private SpriteRenderer _spriteRenderer; // 向き確認用
+
+    private void Awake()
+    {
+        _spriteRenderer = GetComponent<SpriteRenderer>();
+    }
+
+    private void Update()
+    {
+        OnUpdateMoveAction?.Invoke(Time.deltaTime); // 移動の更新アクションを呼び出す
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
     {
         // 相手のオブジェクトが `UnionObject` を持っているか確認
-        IUnionObject stationary = other.GetComponent<IUnionObject>();
+        IUnionObject stationary = collision.gameObject.GetComponent<IUnionObject>();
         if (stationary != null)
         {
             Debug.Log("UnionObject");
-            TryCombine(stationary, other.gameObject);
+            TryCombine(stationary, collision.gameObject);
+        }
+        else if (collision.gameObject.CompareTag("Ground"))
+        {
+            Debug.Log("GroundHitAmmo");
+            GroundHitAmmo(collision); // 衝突したオブジェクトが地面の場合、地面に着弾処理を実行
+        }
+        else if (collision.gameObject.CompareTag("Enemy"))
+        {
+            RushingEnemy enemy = collision.gameObject.GetComponent<RushingEnemy>();
+            if (enemy != null)
+            {
+                enemy.TakeDamage(1); // 敵にダメージを与える
+            }
+            Destroy(gameObject); // 弾を削除
         }
     }
 
@@ -40,7 +69,11 @@ public class Ammo : MonoBehaviour
         if (resultObject != null)
         {
             // 新しいオブジェクトを生成
-            Instantiate(resultObject, transform.position, Quaternion.identity);
+            GameObject newresultObject = Instantiate(resultObject, transform.position, resultObject.transform.rotation);
+            SpriteRenderer newSpriteRenderer = newresultObject.GetComponent<SpriteRenderer>();
+
+            // 弾の向きに応じてスプライトを反転させる
+            newSpriteRenderer.flipX = _spriteRenderer.flipX;
 
             // 現在のオブジェクトと設置オブジェクトを削除
             Destroy(gameObject);
@@ -53,8 +86,7 @@ public class Ammo : MonoBehaviour
         Vector2 hitPosition = collision.contacts[0].point; // 衝突地点を取得
         Vector2 spawnPosition = hitPosition;
 
-        // Standのサイズを取得
-        BoxCollider2D standCollider = UnionObject.GetComponent<BoxCollider2D>();
+        Collider2D standCollider = UnionObject.GetComponent<Collider2D>();
         float halfWidth = standCollider.bounds.extents.x;  // オブジェクトサイズを取得、半分の幅を求める
         float halfHeight = standCollider.bounds.extents.y;  // オブジェクトサイズを取得、半分の高さを求める
 
@@ -88,11 +120,15 @@ public class Ammo : MonoBehaviour
         }
 
         // Standを生成
-        Instantiate(UnionObject, spawnPosition, Quaternion.identity);
+        GameObject newUnionObject = Instantiate(UnionObject, spawnPosition, UnionObject.transform.rotation);
+
+        SpriteRenderer newSpriteRenderer = newUnionObject.GetComponent<SpriteRenderer>();
+
+        // 弾の向きに応じてスプライトを反転させる
+        newSpriteRenderer.flipX = _spriteRenderer.flipX;
 
         Destroy(gameObject);
     }
-
 
 
     /// <summary>
