@@ -1,144 +1,170 @@
-using System.Collections;
-using UnityEditor.Tilemaps;
+using TMPro;
+using Unity.VisualScripting;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
-public class RushEnemy : MonoBehaviour
+public class RushEnemy : MonoBehaviour, IDamageable
 {
+    private enum Re_State
+    {
+        Patrol,
+        Stun,
+        Rush
+    }
+
     [SerializeField] private GameObject targetPlayer;  // プレイヤーのオブジェクト
-    [SerializeField] private float rushDistance = 2f;  // 突進を開始する距離
-    [SerializeField] private float patrolTime = 5f;  // 歩く時間
     [SerializeField] private float normalSpeed = 2f;  // 移動速度
     [SerializeField] private float rushSpeed = 4f;  // 突進時の移動速度
-    [SerializeField] private float rushDuration = 2f;  // 突進する時間
+    [SerializeField] private float rushStartDistance = 5f;  // 突進を開始する距離
+    [SerializeField] private float stunDuration = 4f;  // スタンした時間
     [SerializeField] private int maxHealth = 3;  // 最大HP
+    [SerializeField] private int damageToPlayer = 1;  // プレイヤーに与えるダメージ
 
-    private float patrolStartTime;  // 移動開始時間
-    private float rushStartTime;  // 突進開始時間
-    private float stunEndTime = 0;  // スタン終了時間
-    private float rushCooldownEndTime = 0;  // 突進クールタイム終了時間
+    private Re_State currentState = Re_State.Patrol;  // 初期状態はPatrol
+
+    private float stateStartTime;  // 遷移後の時間を記録
+    private float currentSpeed;  // 現在の速度
     private int direction = 1;  // 1:右へ移動, -1:左へ移動
     private int currentHealth; // 現在のHP
-    private bool isRushing = false;  // 突進中かどうか
-    private bool isStopped = false;  // 停止中かどうか
-
+    private bool isWallhit = false;  // 壁にぶつかったかどうか
     private Rigidbody2D rb;  // Rigidbodyの変数
 
     void Start()
     {
-        rb = GetComponent<Rigidbody2D>();  // Rigidbody2Dを取得
-        patrolStartTime = Time.time;  // ゲーム開始時の時間
+        rb = GetComponent<Rigidbody2D>();  // Rigidbodyを取得
         currentHealth = maxHealth;  // HPを初期化
     }
 
     void Update()
     {
-        if (Time.time < stunEndTime)
+        switch (currentState)
         {
-            // スタン中は動かない
-            rb.linearVelocity = Vector2.zero;
-            return;
-        }
+            case Re_State.Patrol:
+                currentSpeed = normalSpeed;  // 速さを普通に設定
 
+                // Patrol状態の処理
+                StatePatrol();
+                break;
+
+            case Re_State.Stun:
+                currentSpeed = 0;  // 速さを0に設定
+
+                // Stun状態の処理
+                StateStun();
+                break;
+
+            case Re_State.Rush:
+                currentSpeed = rushSpeed;  // 速さを早めに設定
+
+                // Rush状態の処理
+                StateRush();
+                break;
+        }
+    }
+
+    private void StatePatrol()
+    {
         Vector2 mypos = transform.position;  // 自分の位置を取得
         Vector2 playerpos = targetPlayer.transform.position;  // プレイヤーの位置を取得
 
-        // プレイヤーとの距離を計算
-        float distance = Vector2.Distance(mypos, playerpos);
+        // プレイヤーの位置を取得
+        float distance = Vector2.Distance(transform.position, targetPlayer.transform.position);
 
-        // プレイヤーの方向を取得
-        float directionToPlayer = Mathf.Sign(playerpos.x - mypos.x);  // -1(左) or 1(右)
 
-        if (isRushing)
+        Move();
+
+        // プレイヤーとの距離が近かったら
+        if (distance < rushStartDistance)
         {
-            if (Time.time - rushStartTime >= rushDuration)
-            {
-                Debug.Log("突進終了");
-                isRushing = false;   // 突進状態をリセット
-                patrolStartTime = Time.time;  // パトロール再開の時間を更新
-                // StartCoroutine(StopForSeconds(1f));  // 1秒停止
-            }
+            // プレイヤーの方向を取得
+            float directionToPlayer = Mathf.Sign(playerpos.x - mypos.x);  // -1(左) or 1(右)
 
-            Move();
-            return;
-        }
-
-        // 突進できるかチェック
-        if (distance < rushDistance && Time.time > rushCooldownEndTime)
-        {
-            Debug.Log("突進開始");
-
-            // 反転
+            // プレイヤーが後ろにいたら反転
             if ((directionToPlayer > 0 && transform.localScale.x < 0) || (directionToPlayer < 0 && transform.localScale.x > 0))
             {
                 Flip();
             }
-            isRushing = true;
-            rushStartTime = Time.time;
+            StateChange(Re_State.Rush);
         }
-        Move();
+
+        // 壁にぶつかったら
+        if (isWallhit)
+        {
+            isWallhit = false;  // フラグをリセット
+            Flip();
+        }
     }
 
-    void Move()
+    private void StateStun()
     {
-        if (isStopped)
+        Move();
+
+        // スタンして数秒経過したら
+        if (Time.time - stateStartTime >= stunDuration)
         {
-            // Debug.Log("敵が停止しました");
-            rb.linearVelocity = Vector2.zero;
-            return;  // 停止中は移動しない
+            Debug.Log("スタンを抜けます");
+            StateChange(Re_State.Patrol);
+        }
+    }
+
+    private void StateRush()
+    {
+        Move();
+
+        if (isWallhit)
+        {
+            isWallhit = false;  // フラグをリセット
+            StateChange(Re_State.Stun);  // Stun状態に遷移
+        }
+    }
+
+    private void StateChange(Re_State newState)
+    {
+        // 現在のStateを離れるときの処理
+        if (currentState == Re_State.Patrol)
+        {
+            // Patrol状態を離れるとき
+        }
+        else if (currentState == Re_State.Stun)
+        {
+            // Stun状態を離れるとき
+
+            // 振り向くべきか判定（プレイヤーの方向と向きが逆ならFlip）
+            float directionToPlayer = targetPlayer.transform.position.x - transform.position.x;
+
+            if ((directionToPlayer > 0 && transform.localScale.x < 0) || (directionToPlayer < 0 && transform.localScale.x > 0))
+            {
+                Flip();
+            } 
+        }
+        else if (currentState == Re_State.Rush)
+        {
+            // Rush状態を離れるとき
         }
 
-        float currentSpeed = isRushing ? rushSpeed : normalSpeed;
-
-        // パトロール時のみ方向転換
-        if (!isRushing && Time.time - patrolStartTime > patrolTime)
+        // 新しいStateに入るときの処理
+        if (newState == Re_State.Patrol)
         {
-            Flip();
-            patrolStartTime = Time.time;
+            // Patrol状態に入るとき
         }
+        else if (newState == Re_State.Stun)
+        {
+            // Stun状態に入るとき   
+        }
+        else if (newState == Re_State.Rush)
+        {
+            // Rush状態に入るとき
+        }
+        stateStartTime = Time.time;  // 状態開始時間を記録
 
+        currentState = newState;  // 状態を更新
+        Debug.Log("状態を更新");
+    }
+
+    private void Move()
+    {
         // 現在の方向に移動
         rb.linearVelocity = new Vector2(direction * currentSpeed, rb.linearVelocity.y);
-    }
-
-    // 壁にぶつかったとき
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.gameObject.CompareTag("Wall"))
-        {
-            // 突進中は停止しない
-            if (!isRushing)
-            {
-                Debug.Log("壁にぶつかった スタン");
-
-                isRushing = false;
-                rb.linearVelocity = Vector2.zero;
-                isStopped = true;
-
-                // スタン終了時間と突進禁止時間を記録
-                stunEndTime = Time.time + 4f;
-                rushCooldownEndTime = stunEndTime + 2f;
-
-                StartCoroutine(EndStunAndFlip(4f));  // 4秒停止
-            }
-        }
-    }
-
-    private IEnumerator EndStunAndFlip(float delay)
-    {
-        yield return new WaitForSeconds(delay);
-
-        isStopped = false;
-        Flip();
-        patrolStartTime = Time.time;
-    }
-
-    public void TakeDamage(int damage)
-    {
-        currentHealth -= damage;
-        if (currentHealth <= 0)
-        {
-            Destroy(gameObject);
-        }
     }
 
     // 方向転換メソッド
@@ -150,5 +176,35 @@ public class RushEnemy : MonoBehaviour
         transform.localScale = scale;
 
         direction *= -1;  // 移動方向を反転
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        // 壁にぶつかったら
+        if (collision.gameObject.CompareTag("Wall"))
+        {
+            Debug.Log("壁にぶつかりました");
+            isWallhit = true;
+        }
+
+        //  プレイヤーにぶつかったら
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            Debug.Log("プレイヤーにぶつかりました");
+            PlayerHealth playerHealth = collision.gameObject.GetComponent<PlayerHealth>();  // PlayerHealthコンポーネントを取得
+            if (playerHealth != null)
+            {
+                playerHealth.TakeDamage(damageToPlayer);
+            }
+        }
+    }
+
+    public void TakeDamage(int damage)
+    {
+        currentHealth -= damage;
+        if (currentHealth <= 0)
+        {
+            Destroy(gameObject);
+        }
     }
 }

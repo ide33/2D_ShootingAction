@@ -125,7 +125,6 @@ public class PlayerController : MonoBehaviour
         if (collision.collider.CompareTag("Ground"))
         {
             isGround = true;
-            Debug.Log("地面にいます");
         }
     }
 
@@ -135,7 +134,6 @@ public class PlayerController : MonoBehaviour
         if (collision.collider.CompareTag("Ground"))
         {
             isGround = false;
-            Debug.Log("地面にいません");
         }
     }
 }

@@ -14,10 +14,10 @@ public class StandEntity : MonoBehaviour
         }
         else if (collision.gameObject.CompareTag("Enemy"))
         {
-            RushingEnemy enemy = collision.gameObject.GetComponent<RushingEnemy>();
-            if (enemy != null)
+            IDamageable damageable = collision.gameObject.GetComponent<IDamageable>();
+            if (damageable != null)
             {
-                enemy.TakeDamage(1);
+                damageable.TakeDamage(1);
             }
             Destroy(gameObject);
         }
