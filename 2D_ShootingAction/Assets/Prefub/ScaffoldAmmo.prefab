@@ -10,10 +10,10 @@ GameObject:
   m_Component:
   - component: {fileID: 3321925435885687362}
   - component: {fileID: 2955174228987265719}
-  - component: {fileID: 1601356364529061954}
+  - component: {fileID: -6121126429593425236}
   - component: {fileID: 2616246563148653547}
   - component: {fileID: 940536156274066230}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: ScaffoldAmmo
   m_TagString: SA
   m_Icon: {fileID: 0}
@@ -90,7 +90,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!50 &1601356364529061954
+--- !u!50 &-6121126429593425236
 Rigidbody2D:
   serializedVersion: 5
   m_ObjectHideFlags: 0
