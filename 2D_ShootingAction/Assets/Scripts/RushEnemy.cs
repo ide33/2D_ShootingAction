@@ -194,7 +194,10 @@ public class RushEnemy : MonoBehaviour, IDamageable
             PlayerHealth playerHealth = collision.gameObject.GetComponent<PlayerHealth>();  // PlayerHealthコンポーネントを取得
             if (playerHealth != null)
             {
-                playerHealth.TakeDamage(damageToPlayer);
+                playerHealth.TakeDamage(damageToPlayer);  // プレイヤーにダメージ
+
+                GameObject director = GameObject.Find("GameDirector");
+                director.GetComponent<GameDirector>().DecreaseHp();  // DecreaseHpメソッドを呼び出す
             }
         }
     }

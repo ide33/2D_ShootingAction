@@ -1,6 +1,7 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
-public class JumpEnemy : MonoBehaviour
+public class JumpEnemy : MonoBehaviour , IDamageable
 {
     private enum Jp_State
     {
@@ -67,21 +68,21 @@ public class JumpEnemy : MonoBehaviour
         }
     }
 
-    private void StateChange(Jp_State newState)
-    {
-        // 現在のStateを離れるときの処理
-        if (currentState == Jp_State.Jump)
-        {
-            // Jp状態を離れるとき
-        }
+    // private void StateChange(Jp_State newState)
+    // {
+    //     // // 現在のStateを離れるときの処理
+    //     // if (currentState == Jp_State.Jump)
+    //     // {
+    //     //     // Jp状態を離れるとき
+    //     // }
 
-        // 新しいStateに入るときの処理
-        if (newState == Jp_State.Jump)
-        {
-            // Jp状態に入るとき
-        }
-        currentState = newState;  // 状態を更新
-    }
+    //     // // 新しいStateに入るときの処理
+    //     // if (newState == Jp_State.Jump)
+    //     // {
+    //     //     // Jp状態に入るとき
+    //     // }
+    //     currentState = newState;  // 状態を更新
+    // }
 
     private void Jumping()
     {
@@ -129,7 +130,10 @@ public class JumpEnemy : MonoBehaviour
             PlayerHealth playerHealth = collision.gameObject.GetComponent<PlayerHealth>();  // PlayerHealthコンポーネントを取得
             if (playerHealth != null)
             {
-                playerHealth.TakeDamage(damageToPlayer);
+                playerHealth.TakeDamage(damageToPlayer);  // プレイヤーにダメージ
+
+                GameObject director = GameObject.Find("GameDirector");
+                director.GetComponent<GameDirector>().DecreaseHp();  // DecreaseHpメソッドを呼び出す
             }
         }
     }
