@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 940536156274066230}
   m_Layer: 7
   m_Name: ScaffoldAmmo
-  m_TagString: SA
+  m_TagString: Ammo
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

@@ -12,6 +12,7 @@ TagManager:
   - MoveScaffold
   - Enemy
   - Wall
+  - Ammo
   layers:
   - Default
   - TransparentFX
