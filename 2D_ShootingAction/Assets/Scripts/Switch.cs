@@ -1,28 +1,38 @@
 using UnityEngine;
 
-public class Switch : MonoBehaviour, ISwitch
+public class Switch : MonoBehaviour
 {
-    [SerializeField] private MonoBehaviour targetObject;  // IDoorを実装しているオブジェクト
-    private IDoor door;  // 扉のインターフェイスを保持する変数
+    [SerializeField] private GameObject targetObject;  // IDoorを実装しているオブジェクト
+    private IActivatable activatable;  // 扉のインターフェイスを保持する変数
 
-    private void Awake()
+    private void Start()
     {
-        door = targetObject as IDoor;  // targerObjectに代入されたオブジェクトをIDoorとして型変換
-
-        if (door == null)  // IDoorが実装されていない場合
-        Debug.LogError("targetObjectはIDoorを実装していません");
-    }
-
-    public void Activate()
-    {
-        door.Open();  // ボタンを押すと扉が開く
-    }
-
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.CompareTag("Ammo"))
+        if (targetObject != null)
         {
-            Activate();
-        }   
+            activatable = targetObject.GetComponent<IActivatable>();
+        }
     }
+
+    public void Open()
+    {
+        Debug.Log("Open() が呼ばれました");
+
+        if (activatable != null)
+        {
+            Debug.Log("activatable が有効なので Activate() を呼びます");
+            activatable.Activate();  // ボタンを押すと扉が開く
+        }
+        else
+    {
+        Debug.LogWarning("activatable が null です。targetObject の設定を確認してください。");
+    }
+    }
+
+    // private void OnTriggerEnter2D(Collider2D collision)
+    // {
+    //     if (collision.CompareTag("Ammo"))
+    //     {
+    //         Open();
+    //     }   
+    // }
 }

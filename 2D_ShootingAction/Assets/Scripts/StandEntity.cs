@@ -21,6 +21,15 @@ public class StandEntity : MonoBehaviour
             }
             Destroy(gameObject);
         }
+        else if (collision.gameObject.CompareTag("Switch"))
+        {
+            Switch switchComponent = collision.gameObject.GetComponent<Switch>();
+            if (switchComponent != null)
+            {
+                switchComponent.Open();
+            }
+            Destroy(gameObject);
+        }
     }
 
     void GroundHitAmmo(Collision2D collision)

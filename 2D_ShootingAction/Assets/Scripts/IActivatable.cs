@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public interface ISwitch
+public interface IActivatable
 {
     void Activate();
 }
