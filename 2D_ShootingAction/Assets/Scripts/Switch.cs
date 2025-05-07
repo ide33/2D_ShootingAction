@@ -15,24 +15,9 @@ public class Switch : MonoBehaviour
 
     public void Open()
     {
-        Debug.Log("Open() が呼ばれました");
-
         if (activatable != null)
         {
-            Debug.Log("activatable が有効なので Activate() を呼びます");
             activatable.Activate();  // ボタンを押すと扉が開く
         }
-        else
-    {
-        Debug.LogWarning("activatable が null です。targetObject の設定を確認してください。");
     }
-    }
-
-    // private void OnTriggerEnter2D(Collider2D collision)
-    // {
-    //     if (collision.CompareTag("Ammo"))
-    //     {
-    //         Open();
-    //     }   
-    // }
 }

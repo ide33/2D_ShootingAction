@@ -68,22 +68,6 @@ public class JumpEnemy : MonoBehaviour , IDamageable
         }
     }
 
-    // private void StateChange(Jp_State newState)
-    // {
-    //     // // 現在のStateを離れるときの処理
-    //     // if (currentState == Jp_State.Jump)
-    //     // {
-    //     //     // Jp状態を離れるとき
-    //     // }
-
-    //     // // 新しいStateに入るときの処理
-    //     // if (newState == Jp_State.Jump)
-    //     // {
-    //     //     // Jp状態に入るとき
-    //     // }
-    //     currentState = newState;  // 状態を更新
-    // }
-
     private void Jumping()
     {
         // 現在の速度をリセット

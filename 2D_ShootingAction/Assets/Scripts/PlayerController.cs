@@ -6,12 +6,14 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float speed = 5f;  // プレイヤーの速度
     [SerializeField] private float jumpForce = 5f;  // ジャンプの強さ
     [SerializeField] private float shootCoolTime = 0.3f;  // 攻撃のクールタイム
+    [SerializeField] private float checkGround = 0.1f;  // 地面までの距離
+    [SerializeField] private LayerMask groundLayer;  // Groundレイヤー
     [SerializeField] Transform shootPoint;  // 弾の発射位置
     [SerializeField] BulletShotStructure standBullet;  // 足場弾のスクリプタブルオブジェクト
     [SerializeField] BulletShotStructure cannonBullet;  // 大砲弾のスクリプタブルオブジェクト
     [SerializeField] BulletShotStructure moovStandBullet;  // 移動足場弾のスクリプタブルオブジェクト
 
-    private bool isGround = false;  // 地面にいるかどうか
+    // private bool isGround = false;  // 地面にいるかどうか
     private float lastAttack;  // 最後に攻撃した時間
     private Rigidbody2D rb2d;  // Rigidbodyの変数
     private SpriteRenderer spriteRenderer;  // スプライトの変数
@@ -28,7 +30,7 @@ public class PlayerController : MonoBehaviour
         Vector2 direction = spriteRenderer.flipX ? Vector2.left : Vector2.right;
 
         // スペースキーが押され、地面にいるとき
-        if (Input.GetKeyDown(KeyCode.Space) && isGround)
+        if (Input.GetKeyDown(KeyCode.Space) && IsGrounded())
         {
             rb2d.linearVelocity = new Vector2(rb2d.linearVelocityX, 0);  // 上向きの速度をリセット
             rb2d.AddForce(new Vector2(0, jumpForce), ForceMode2D.Impulse);  // ジャンプの力を加える
@@ -119,21 +121,32 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void OnCollisionStay2D(Collision2D collision)
+    // void OnCollisionStay2D(Collision2D collision)
+    // {
+    //     // 地面に触れているとき
+    //     if (collision.collider.CompareTag("Ground"))
+    //     {
+    //         isGround = true;
+    //     }
+    // }
+
+    private bool IsGrounded()
     {
-        // 地面に触れているとき
-        if (collision.collider.CompareTag("Ground"))
-        {
-            isGround = true;
-        }
+        // プレイヤーの位置から真下にレイを飛ばす
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, checkGround, groundLayer);
+
+        // デバッグ用：レイをSceneビューに描画（赤は当たらない、緑は当たった）
+        Debug.DrawRay(transform.position, Vector2.down * checkGround, hit.collider ? Color.green : Color.red);
+
+        return hit.collider != null;
     }
 
-    void OnCollisionExit2D(Collision2D collision)
-    {
-        // 地面に触れていないとき
-        if (collision.collider.CompareTag("Ground"))
-        {
-            isGround = false;
-        }
-    }
+    // void OnCollisionExit2D(Collision2D collision)
+    // {
+    //     // 地面に触れていないとき
+    //     if (collision.collider.CompareTag("Ground"))
+    //     {
+    //         isGround = false;
+    //     }
+    // }
 }
