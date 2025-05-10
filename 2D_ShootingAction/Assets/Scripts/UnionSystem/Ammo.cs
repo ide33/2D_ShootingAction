@@ -6,6 +6,14 @@ using UnityEngine;
 /// <summary>
 /// 弾のクラス
 /// </summary>
+/*
+    * このクラスは、合成オブジェクトの弾を表します。
+    * 弾は、敵に命中すると、ダメージを与えます。
+    * 地面に命中すると、指定したオブジェクトを生成します。
+    * 合成オブジェクトに命中すると、設定された合成ルールに基づいた合成処理を行います。
+    *
+    * また、デリゲート(Action)を使用して、移動の更新アクションを実行することができます。
+*/
 public class Ammo : MonoBehaviour
 {
     [SerializeField] private GameObject UnionObject; // 生成するオブジェクト
@@ -14,7 +22,7 @@ public class Ammo : MonoBehaviour
     [SerializeField] private UnionData AmmoUnionData; // この弾オブジェクトの合成要素
     [SerializeField] private CombinationRule combinationRule; // 合成ルールを設定
 
-    public Action<float> OnUpdateMoveAction; // 移動の更新アクション
+    public Action<float> OnUpdateMoveAction; // 移動の更新デリゲート
 
     private SpriteRenderer _spriteRenderer; // 向き確認用
 
@@ -25,7 +33,7 @@ public class Ammo : MonoBehaviour
 
     private void Update()
     {
-        OnUpdateMoveAction?.Invoke(Time.deltaTime); // 移動の更新アクションを呼び出す
+        OnUpdateMoveAction?.Invoke(Time.deltaTime); // 移動の更新デリゲートを呼び出す
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -60,6 +68,25 @@ public class Ammo : MonoBehaviour
     /// <param name="unionObject"></param>
     private void TryCombine(IUnionObject stationary, GameObject unionObject)
     {
+        // Nullチェック
+        if (AmmoUnionData == null)
+        {
+            Debug.LogError("AmmoUnionData is not set.");
+            return;
+        }
+
+        if (stationary == null)
+        {
+            Debug.LogError("Stationary object is null.");
+            return;
+        }
+
+        if (stationary.unionData == null)
+        {
+            Debug.LogError("Stationary object's unionData is null.");
+            return;
+        }
+
         // 自分と相手の要素を取得
         string elementA = AmmoUnionData.unionDataNeme;
         string elementB = stationary.unionData.unionDataNeme;

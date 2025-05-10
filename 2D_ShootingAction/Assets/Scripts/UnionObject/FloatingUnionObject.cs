@@ -3,19 +3,25 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// 移動し壁を上る足場オブジェクトのクラス
+/// 移動足場オブジェクトのクラス
 /// </summary>
-public class FloatingUnionObject : MonoBehaviour, IUnionObject
+/*
+    * このクラスは、合成オブジェクトの移動し壁を上る足場を表します。
+    * 移動足場は、前方に移動し、壁に触れると上に移動します。
+*/
+public class FloatingUnionObject : BaseUnionObject
 {
-    [SerializeField] private UnionData UnionData;         // プロパティに設定するデータ
-    public UnionData unionData { get; set; }              // 継承プロパティ
-
     // インスペクター上で設定する変数
+    [SerializeField] private UnionData FloatingUnionData;         // プロパティに設定するデータ
+
     [Header("移動設定")]
     [SerializeField] private float SideMoveSpeed = 4f;    // 左右移動速度
     [SerializeField] private float WallClimbSpeed = 3f;   // 壁を登る速度
     [SerializeField] private float WallDistance = 0.2f;   // 登る時の壁との距離
     [SerializeField] private LayerMask WallMask;          // 壁とするレイヤー
+
+    [Header("消滅時間")]
+    [SerializeField] private float DestroyTime = 5f;      // 消滅時間
 
 
     // 内部処理する変数
@@ -32,13 +38,23 @@ public class FloatingUnionObject : MonoBehaviour, IUnionObject
         {
             unionData = new UnionData();
         }
-        unionData.unionDataNeme = UnionData.unionDataNeme;
+        unionData.unionDataNeme = FloatingUnionData.unionDataNeme;
 
         _rigidbody2D = GetComponent<Rigidbody2D>();
         _spriteRenderer = GetComponent<SpriteRenderer>();
 
         // 移動する向きをSpriteRendererの向きから取得
         direction = _spriteRenderer.flipX ? -1 : 1;
+
+        Destroy(gameObject, DestroyTime); // 指定時間後にオブジェクトを削除
+    }
+    public override void OnObjectCreate()
+    {
+        base.OnObjectCreate();
+    }   
+    public override void OnObjectDestroy()
+    {
+        base.OnObjectDestroy();
     }
 
     void Update()

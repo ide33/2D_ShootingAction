@@ -5,12 +5,15 @@ using UnityEngine;
 /// <summary>
 /// 大砲オブジェクトのクラス
 /// </summary>
-public class CannonUnionObject : MonoBehaviour, IUnionObject
+/*
+    * このクラスは、合成オブジェクトの大砲を表します。
+    * 大砲は、指定した範囲内の敵を索敵し、弾を発射します。
+*/
+public class CannonUnionObject : BaseUnionObject
 {
-    [SerializeField] private UnionData UnionData;             // プロパティに設定するデータ
-    public UnionData unionData { get; set; }                  // 継承プロパティ
-
     // インスペクター上で設定する変数
+    [SerializeField] private UnionData CannonUnionData;        // プロパティに設定するデータ
+
     [Header("発射物設定")]
     [SerializeField] private GameObject FiringPoint;          // 発射位置
     [SerializeField] private GameObject CannonObjectAmmo;     // 発射する弾
@@ -23,34 +26,14 @@ public class CannonUnionObject : MonoBehaviour, IUnionObject
     [SerializeField] private float SearchPointDistance = 10f; // 索敵範囲の中心の距離
     [SerializeField] private LayerMask TargetLayerMask;       // 狙う対象のレイヤー
 
+    [Header("消滅時間")]
+    [SerializeField] private float DestroyTime = 5f;      // 消滅時間
+
     // 内部処理する変数
     private GameObject targetEnemy;                       // 範囲内にいる狙う対象
     private bool isFired = false;                         // クールタイムが終わっているか判定
     private SpriteRenderer _spriteRenderer;               // 向き確認用
     private int direction;                                // 発射する向き
-
-    // ====================================================================
-    // デバッグ用軌跡表示フィールド
-    // ====================================================================
-    // [SerializeField] private LineRenderer trajectoryLine; // 軌跡表示用のLineRenderer
-    // [SerializeField] private int trajectoryPoints = 50;   // 軌跡のポイント数
-    // [SerializeField] private float trajectoryTime = 2f;   // 軌跡の表示時間
-
-    void Awake()
-    {
-        // trajectoryLine = GetComponent<LineRenderer>();
-        // LineRendererが設定されていない場合は自動生成
-        // if (trajectoryLine == null)
-        // {
-        //     GameObject lineObj = new GameObject("TrajectoryLine");
-        //     trajectoryLine = lineObj.AddComponent<LineRenderer>();
-        //     trajectoryLine.startWidth = 0.1f;
-        //     trajectoryLine.endWidth = 0.1f;
-        //     trajectoryLine.material = new Material(Shader.Find("Sprites/Default"));
-        //     trajectoryLine.startColor = Color.yellow;
-        //     trajectoryLine.endColor = Color.yellow;
-        // }
-    }
 
     void Start()
     {
@@ -59,7 +42,7 @@ public class CannonUnionObject : MonoBehaviour, IUnionObject
         {
             unionData = new UnionData();
         }
-        unionData.unionDataNeme = UnionData.unionDataNeme;
+        unionData.unionDataNeme = CannonUnionData.unionDataNeme;
 
         _spriteRenderer = GetComponent<SpriteRenderer>();
 
@@ -73,6 +56,16 @@ public class CannonUnionObject : MonoBehaviour, IUnionObject
         Vector3 localPosition = FiringPoint.transform.localPosition;
         localPosition.y = Mathf.Abs(localPosition.y) * -direction; // Y軸を反転
         FiringPoint.transform.localPosition = localPosition;
+
+        Destroy(gameObject, DestroyTime); // 指定時間後にオブジェクトを削除
+    }
+    public override void OnObjectCreate()
+    {
+        base.OnObjectCreate();
+    }   
+    public override void OnObjectDestroy()
+    {
+        base.OnObjectDestroy();
     }
 
     void FixedUpdate()
@@ -194,9 +187,6 @@ public class CannonUnionObject : MonoBehaviour, IUnionObject
 
         // 速度を設定
         rb.linearVelocity = initialVelocity;
-
-        // // 軌跡を表示
-        // ShowTrajectory(startPosition, initialVelocity, gravity);
 
         // 移動方向に回転するコルーチン開始
         StartCoroutine(RotateToMovementDirection(newCannonAmmo.transform, rb));

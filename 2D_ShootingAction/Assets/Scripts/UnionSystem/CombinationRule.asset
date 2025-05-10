@@ -15,10 +15,10 @@ MonoBehaviour:
   combinations:
   - elementA: Cannon
     elementB: Stand
-    resultObject: {fileID: 8858829497327370969, guid: f3158dfe33c0125408487cefb3288264, type: 3}
+    resultObject: {fileID: 2835280775128595936, guid: b063fb9efafe8a44fa1988dd131714d7, type: 3}
   - elementA: Cannon
     elementB: Floating
-    resultObject: {fileID: 373705831554014528, guid: c81448c2e8e8c014c9d6c5ea7beb1f60, type: 3}
+    resultObject: {fileID: 1423277961549473404, guid: dce46ac7da8f8724c800da16b204836f, type: 3}
   - elementA: Stand
     elementB: Floating
-    resultObject: {fileID: 9026836182255171860, guid: 98ecfe1bd40162e4b83240e615356a43, type: 3}
+    resultObject: {fileID: 7633459637918879070, guid: 17668168e57a2a542971a27339245fdf, type: 3}

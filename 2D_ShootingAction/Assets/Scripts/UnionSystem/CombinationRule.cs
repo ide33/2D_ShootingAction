@@ -6,6 +6,14 @@ using UnityEngine;
 /// <summary>
 ///  合成ルールを定義するスクリプタブルオブジェクト（弾にこの合成ルールを設定する）
 /// </summary>
+/*
+    * このクラスは、合成ルールを定義するスクリプタブルオブジェクトです。
+    * 合成ルールは、2つの要素（名前）に対応する合成オブジェクトを取得し生成することを目的としています。
+    * 
+    * - Combination: 合成ルールの構造体
+    * - combinations: 合成ルールのリスト
+    * - GetCombinationResult: 2つの要素に対応する合成オブジェクトを取得するメソッド
+*/
 [CreateAssetMenu(fileName = "CombinationRule", menuName = "Combination/Rule")]
 public class CombinationRule : ScriptableObject
 {

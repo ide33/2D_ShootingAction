@@ -5,10 +5,17 @@ using UnityEngine;
 /// <summary>
 /// 足場オブジェクトのクラス
 /// </summary>
-public class StandUnionObject : MonoBehaviour, IUnionObject
+/*
+    * このクラスは、合成オブジェクトの足場を表します。
+    * 足場は、プレイヤーが乗ることができます。
+*/
+public class StandUnionObject : BaseUnionObject
 {
-    [SerializeField] private UnionData UnionData;        // プロパティに設定するデータ
-    public UnionData unionData { get; set; }             // 継承プロパティ
+    // インスペクター上で設定する変数
+    [SerializeField] private UnionData StandUnionData;    // プロパティに設定するデータ
+
+    [Header("消滅時間")]
+    [SerializeField] private float DestroyTime = 5f;      // 消滅時間
 
     // 内部処理する変数
     private Rigidbody2D _rigidbody2D;       // 移動用？
@@ -22,37 +29,18 @@ public class StandUnionObject : MonoBehaviour, IUnionObject
         {
             unionData = new UnionData();
         }
-        unionData.unionDataNeme = UnionData.unionDataNeme;
+        unionData.unionDataNeme = StandUnionData.unionDataNeme;
 
         _rigidbody2D = GetComponent<Rigidbody2D>();
         _spriteRenderer = GetComponent<SpriteRenderer>();
+        Destroy(gameObject, DestroyTime); // 指定時間後にオブジェクトを削除
     }
-
-    // =========================================================
-    // プレイヤー足場判定接触処理
-    // =========================================================
-    // private void OnTriggerStay2D(Collider2D collision)
-    // {
-    //     if (collision.gameObject.CompareTag("Player"))
-    //     {
-    //         currentPlayer = collision.GetComponent<Player_Move>(); // プレイヤーの情報を取得
-
-    //         if (currentPlayer != null && !currentPlayer.AirJudge()) 
-    //         {
-    //             currentPlayer.RideMoveSpeed = _rigidbody2D.linearVelocity; // 足場の速度をプレイヤーに設定
-    //         }
-    //     }
-    // }
-
-    // private void OnTriggerExit2D(Collider2D collision)
-    // {
-    //     if (collision.gameObject.CompareTag("Player"))
-    //     {
-    //         if (currentPlayer != null)
-    //         {
-    //             currentPlayer.RideMoveSpeed = Vector3.zero; // 足場から降りたとき速度をリセット
-    //             currentPlayer = null;
-    //         }
-    //     }
-    // }
+    public override void OnObjectCreate()
+    {
+        base.OnObjectCreate();
+    }   
+    public override void OnObjectDestroy()
+    {
+        base.OnObjectDestroy();
+    }
 }
