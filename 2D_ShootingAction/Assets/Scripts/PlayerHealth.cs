@@ -1,14 +1,13 @@
 using System.Collections;
 using UnityEngine;
 
-public class PlayerHealth : MonoBehaviour
+public class PlayerHealth : MonoBehaviour, IDamageable
 {
     [SerializeField] private int maxHealth = 3;  // 最大HP
     [SerializeField] private float invincibleDuration = 2.0f;  // 無敵時間
     [SerializeField] private float flashInterval = 0.1f;  // 点滅間隔
 
     private int currentHealth; // 現在のHP
-    private float lastDamageTime = -Mathf.Infinity;  // 最後にダメージを受けた時間
     private bool isInvincible = false;  // 無敵中かどうか
     private SpriteRenderer spriteRenderer;  // スプライトの変数
     private Coroutine invincibleCoroutine;  // 無敵処理のコルーチン
@@ -29,7 +28,10 @@ public class PlayerHealth : MonoBehaviour
         }
 
         currentHealth -= damage;
-        // lastDamageTime = Time.time;  // ダメージを受けた時間を更新
+
+        GameObject director = GameObject.Find("GameDirector");
+        director.GetComponent<GameDirector>().DecreaseHp();  // HPゲージを減らす
+
         Debug.Log("プレイヤーがダメージを受けた");
 
         // 体力が0になったらゲームオーバー

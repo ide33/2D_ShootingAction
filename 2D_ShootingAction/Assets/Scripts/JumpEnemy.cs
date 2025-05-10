@@ -1,14 +1,14 @@
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class JumpEnemy : MonoBehaviour , IDamageable
+public class JumpEnemy : MonoBehaviour, IDamageable
 {
     private enum Jp_State
     {
         Jump
     }
 
-    [SerializeField] private float jumpForce = 2f;  // 上方向の力
+    [SerializeField] private float jumpForce = 8f;  // 上方向の力
     [SerializeField] private float sideForce = 0.5f;  // 横方向の力
     [SerializeField] private float groundCheckDistance = 0.1f;  // 地面判定の長さ
     [SerializeField] private int maxHealth = 2;  // 最大Hp
@@ -39,8 +39,8 @@ public class JumpEnemy : MonoBehaviour , IDamageable
         switch (currentState)
         {
             case Jp_State.Jump:
-            currentjumoForce = jumpForce;
-            currentsideForce = sideForce;
+                currentjumoForce = jumpForce;
+                currentsideForce = sideForce;
 
                 // jump状態の処理
                 StateJump();
@@ -72,7 +72,7 @@ public class JumpEnemy : MonoBehaviour , IDamageable
     {
         // 現在の速度をリセット
         rb.linearVelocity = Vector2.zero;
-        
+
         // 現在の方向にジャンプ
         rb.AddForce(new Vector2(direction * currentsideForce, currentjumoForce), ForceMode2D.Impulse);
     }
@@ -111,19 +111,20 @@ public class JumpEnemy : MonoBehaviour , IDamageable
         if (collision.gameObject.CompareTag("Player"))
         {
             Debug.Log("プレイヤーにぶつかりました");
-            PlayerHealth playerHealth = collision.gameObject.GetComponent<PlayerHealth>();  // PlayerHealthコンポーネントを取得
-            if (playerHealth != null)
-            {
-                playerHealth.TakeDamage(damageToPlayer);  // プレイヤーにダメージ
 
-                GameObject director = GameObject.Find("GameDirector");
-                director.GetComponent<GameDirector>().DecreaseHp();  // DecreaseHpメソッドを呼び出す
+            IDamageable damageable = collision.gameObject.GetComponent<IDamageable>();  // IDamageableを実装していればインスタンスを取得
+
+            if (damageable != null)
+            {
+                damageable.TakeDamage(damageToPlayer);  // ダメージを与える
             }
         }
     }
+
     public void TakeDamage(int damage)
     {
         currentHealth -= damage;
+
         if (currentHealth <= 0)
         {
             Destroy(gameObject);

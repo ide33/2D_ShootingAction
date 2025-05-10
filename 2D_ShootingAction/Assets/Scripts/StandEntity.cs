@@ -4,7 +4,7 @@ public class StandEntity : MonoBehaviour
 {
     [SerializeField] private GameObject Stand;
     [SerializeField] private float checkRadius = 0.5f; // 重なりチェック用の半径
-    [SerializeField] private float offset = 0.1f; // ずらす距離
+    // [SerializeField] private float offset = 0.1f; // ずらす距離
 
     void OnCollisionEnter2D(Collision2D collision)
     {

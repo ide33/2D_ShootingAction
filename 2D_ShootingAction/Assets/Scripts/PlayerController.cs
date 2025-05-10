@@ -6,14 +6,14 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float speed = 5f;  // プレイヤーの速度
     [SerializeField] private float jumpForce = 5f;  // ジャンプの強さ
     [SerializeField] private float shootCoolTime = 0.3f;  // 攻撃のクールタイム
-    [SerializeField] private float checkGround = 0.1f;  // 地面までの距離
+    [SerializeField] private float checkGroundDistance = 0.1f;  // 地面までの距離
     [SerializeField] private LayerMask groundLayer;  // Groundレイヤー
+    [SerializeField] Transform checkGround;  // 地面判定位置
     [SerializeField] Transform shootPoint;  // 弾の発射位置
     [SerializeField] BulletShotStructure standBullet;  // 足場弾のスクリプタブルオブジェクト
     [SerializeField] BulletShotStructure cannonBullet;  // 大砲弾のスクリプタブルオブジェクト
     [SerializeField] BulletShotStructure moovStandBullet;  // 移動足場弾のスクリプタブルオブジェクト
 
-    // private bool isGround = false;  // 地面にいるかどうか
     private float lastAttack;  // 最後に攻撃した時間
     private Rigidbody2D rb2d;  // Rigidbodyの変数
     private SpriteRenderer spriteRenderer;  // スプライトの変数
@@ -121,32 +121,11 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    // void OnCollisionStay2D(Collision2D collision)
-    // {
-    //     // 地面に触れているとき
-    //     if (collision.collider.CompareTag("Ground"))
-    //     {
-    //         isGround = true;
-    //     }
-    // }
-
     private bool IsGrounded()
     {
         // プレイヤーの位置から真下にレイを飛ばす
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, checkGround, groundLayer);
-
-        // デバッグ用：レイをSceneビューに描画（赤は当たらない、緑は当たった）
-        Debug.DrawRay(transform.position, Vector2.down * checkGround, hit.collider ? Color.green : Color.red);
+        RaycastHit2D hit = Physics2D.Raycast(checkGround.position, Vector2.down, checkGroundDistance, groundLayer);
 
         return hit.collider != null;
     }
-
-    // void OnCollisionExit2D(Collision2D collision)
-    // {
-    //     // 地面に触れていないとき
-    //     if (collision.collider.CompareTag("Ground"))
-    //     {
-    //         isGround = false;
-    //     }
-    // }
 }

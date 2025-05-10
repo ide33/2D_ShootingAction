@@ -135,7 +135,7 @@ public class RushEnemy : MonoBehaviour, IDamageable
             if ((directionToPlayer > 0 && transform.localScale.x < 0) || (directionToPlayer < 0 && transform.localScale.x > 0))
             {
                 Flip();
-            } 
+            }
         }
         else if (currentState == Re_State.Rush)
         {
@@ -191,13 +191,12 @@ public class RushEnemy : MonoBehaviour, IDamageable
         if (collision.gameObject.CompareTag("Player"))
         {
             Debug.Log("プレイヤーにぶつかりました");
-            PlayerHealth playerHealth = collision.gameObject.GetComponent<PlayerHealth>();  // PlayerHealthコンポーネントを取得
-            if (playerHealth != null)
-            {
-                playerHealth.TakeDamage(damageToPlayer);  // プレイヤーにダメージ
 
-                GameObject director = GameObject.Find("GameDirector");
-                director.GetComponent<GameDirector>().DecreaseHp();  // DecreaseHpメソッドを呼び出す
+            IDamageable damageable = collision.gameObject.GetComponent<IDamageable>();  // IDamageableを実装していればインスタンスを取得
+
+            if (damageable != null)
+            {
+                damageable.TakeDamage(damageToPlayer);  // ダメージを与える
             }
         }
     }
@@ -205,6 +204,7 @@ public class RushEnemy : MonoBehaviour, IDamageable
     public void TakeDamage(int damage)
     {
         currentHealth -= damage;
+        
         if (currentHealth <= 0)
         {
             Destroy(gameObject);
