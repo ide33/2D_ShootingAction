@@ -52,7 +52,7 @@ public class Ammo : MonoBehaviour
         }
         else if (collision.gameObject.CompareTag("Enemy"))
         {
-            RushingEnemy enemy = collision.gameObject.GetComponent<RushingEnemy>();
+            IDamageable enemy = collision.gameObject.GetComponent<IDamageable>();
             if (enemy != null)
             {
                 enemy.TakeDamage(1); // 敵にダメージを与える
