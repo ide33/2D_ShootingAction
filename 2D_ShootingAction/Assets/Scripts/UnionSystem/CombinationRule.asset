@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6070bc5339c2ab4e8996ae370e34532, type: 3}
+  m_Name: CombinationRule
+  m_EditorClassIdentifier: 
+  combinations:
+  - elementA: Cannon
+    elementB: Stand
+    resultObject: {fileID: 2835280775128595936, guid: b063fb9efafe8a44fa1988dd131714d7, type: 3}
+  - elementA: Cannon
+    elementB: Floating
+    resultObject: {fileID: 1423277961549473404, guid: dce46ac7da8f8724c800da16b204836f, type: 3}
+  - elementA: Stand
+    elementB: Floating
+    resultObject: {fileID: 7633459637918879070, guid: 17668168e57a2a542971a27339245fdf, type: 3}

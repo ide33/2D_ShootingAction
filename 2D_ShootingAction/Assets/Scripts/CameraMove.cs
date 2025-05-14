@@ -1,0 +1,101 @@
+using System.Collections;
+using System.Collections.Generic;
+using Unity.VisualScripting;
+using UnityEngine;
+
+// TODO カメラ移動がtransform.positionの加算で移動しているためプレイヤーの移動がぶれて見える
+public class CameraMove : MonoBehaviour
+{
+    // インスペクターから設定する変数
+
+    [Header("Player GameObject")]
+    [SerializeField] private float SmoothSpeed = 0.125f; // カメラの追従速度を滑らかにするための係数
+    [SerializeField] private Vector3 OFFSET = new Vector3(0, 0, -10); // カメラとプレイヤーの相対的な位置を設定するオフセット
+
+    [Header("Stage ComeraOut")]
+    [SerializeField] private float MinX; // ステージの左端
+    [SerializeField] private float MaxX; // ステージの右端
+    [SerializeField] private float MinY; // ステージの下端
+    [SerializeField] private float MaxY; // ステージの上端
+
+
+    // 内部処理する変数
+    private GameObject PLAYER; // プレイヤーのGameObjectを取得
+    private Vector3 desiredPosition; // プレイヤーの位置
+
+    void Start()
+    {
+        if (PLAYER == null)
+        {
+            // シーン内のインスタンス化されたプレイヤーを取得
+            PLAYER = GameObject.FindGameObjectWithTag("Player");
+
+            if (PLAYER == null)
+            {
+                Debug.LogError("シーン内に 'Player' タグが付いたオブジェクトが見つかりません。");
+            }
+        }
+
+        // if (PLAYER != null)
+        // {
+        //     transform.position = PLAYER.transform.position + OFFSET;
+        // }
+    }
+
+    void Update()
+    {
+        if (PLAYER != null)
+        {
+            // プレイヤーの位置にオフセットを適用し、ターゲット位置を設定
+            desiredPosition = PLAYER.transform.position + OFFSET;
+        }
+
+        // ステージの境界内にカメラの位置を制限する
+        desiredPosition.x = Mathf.Clamp(desiredPosition.x, MinX, MaxX);
+        desiredPosition.y = Mathf.Clamp(desiredPosition.y, MinY, MaxY);
+
+        // 現在のカメラ位置からターゲット位置への移動を滑らかにする
+        Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, SmoothSpeed);
+        transform.position = smoothedPosition;
+    }
+
+    void OnDrawGizmosSelected()
+    {
+        // // ギズモの色を設定
+        // Gizmos.color = Color.blue;
+
+        // // カメラの制限範囲を矩形で描画
+        // Vector3 bottomLeft = new Vector3(MinX, MinY, 0);
+        // Vector3 bottomRight = new Vector3(MaxX, MinY, 0);
+        // Vector3 topLeft = new Vector3(MinX, MaxY, 0);
+        // Vector3 topRight = new Vector3(MaxX, MaxY, 0);
+
+        // // 矩形の線を描画
+        // Gizmos.DrawLine(bottomLeft, bottomRight);
+        // Gizmos.DrawLine(bottomRight, topRight);
+        // Gizmos.DrawLine(topRight, topLeft);
+        // Gizmos.DrawLine(topLeft, bottomLeft);
+
+        // カメラの映し出せる制限範囲を描画
+        if (Camera.main != null)
+        {
+            Gizmos.color = Color.blue;
+
+            // カメラのサイズとアスペクト比から視野範囲を計算
+            float cameraHeight = Camera.main.orthographicSize * 2;
+            float cameraWidth = cameraHeight * Camera.main.aspect;
+
+            // 映し出せる範囲の四隅を計算
+            Vector3 visibleBottomLeft = new Vector3(MinX - cameraWidth / 2, MinY - cameraHeight / 2, 0);
+            Vector3 visibleBottomRight = new Vector3(MaxX + cameraWidth / 2, MinY - cameraHeight / 2, 0);
+            Vector3 visibleTopLeft = new Vector3(MinX - cameraWidth / 2, MaxY + cameraHeight / 2, 0);
+            Vector3 visibleTopRight = new Vector3(MaxX + cameraWidth / 2, MaxY + cameraHeight / 2, 0);
+
+            // 映し出せる範囲を矩形で描画
+            Gizmos.DrawLine(visibleBottomLeft, visibleBottomRight);
+            Gizmos.DrawLine(visibleBottomRight, visibleTopRight);
+            Gizmos.DrawLine(visibleTopRight, visibleTopLeft);
+            Gizmos.DrawLine(visibleTopLeft, visibleBottomLeft);
+        }
+    }
+}
