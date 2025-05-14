@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a25be320b8db4944bbac83cf7bf6393f, type: 3}
   m_Name: StandBullet
   m_EditorClassIdentifier: 
-  ScaffoldAmmo: {fileID: 835790417105974049, guid: d18a0f4750203804d9456fe61e8210ff, type: 3}
+  ScaffoldAmmo: {fileID: 6125666034530166913, guid: 2e6c1acc635ca164291a533c1f6be5c1, type: 3}
