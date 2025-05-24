@@ -13,11 +13,11 @@ public class GOALPoint : MonoBehaviour
 
     private void Awake()
     {
-        GameManager.Instance.IsGOAL = false; // ゴールフラグを戻す
+        GameManager.Instance.currentGameState = GameState.Game; // ゲーム状態をゲームに設定
     }
 
     // オブジェクトすり抜け判定取得
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.gameObject.CompareTag("Player")) // プレイヤータグに接触したら
         {
@@ -25,9 +25,9 @@ public class GOALPoint : MonoBehaviour
             {
                 StageManager.Instance.UnlockStage(UNLOCK_STAGE_NUMBER); // ステージを解放
             }
+            Debug.Log($"GOALPoint: Stage {UNLOCK_STAGE_NUMBER} unlocked!"); // デバッグログ出力
 
-            GameManager.Instance.IsGOAL = true; // ゴールフラグを立てる
-            GameManager.Instance.IsGame = false; // ゲーム終了
+            GameManager.Instance.CurrentGameState = GameState.Clear; // ゲーム状態をクリアに設定
         }
     }
 }

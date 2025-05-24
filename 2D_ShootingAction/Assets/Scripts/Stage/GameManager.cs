@@ -6,41 +6,36 @@ using UnityEngine;
 /// <summary>
 /// ゲームのフラグを管理するシングルトン
 /// </summary>
+public enum GameState
+{
+    None,
+    Game,
+    GameOver,
+    Clear
+}
+
 public class GameManager : MonoBehaviour
 {
 
     public static GameManager Instance; // シングルトンインスタンスを保持
 
-    // 内部処理する変数
-    private bool isGame = false; // ゲーム中フラグ
-    private bool isGOAL = false; // ゴールフラグ
-    private bool isGameOver = false; // ゲームオーバーフラグ
-    public event Action<bool> OnIsGameChanged;
 
-    // プロパティ
-    public bool IsGame // ゲーム中フラグ取得プロパティ
+    public GameState currentGameState = GameState.None; // ゲーム状態
+    public GameState CurrentGameState // ゲーム状態取得プロパティ
     {
-        get { return isGame; }
+        get { return currentGameState; }
         set
         {
-            if (isGame != value)
+            if (currentGameState != value)
             {
-                Debug.Log($"IsGame changed: {isGame} -> {value}");
-                isGame = value;
-                OnIsGameChanged?.Invoke(isGame); // 状態が変化したら通知
+                Debug.Log($"GameState changed: {currentGameState} -> {value}");
+                currentGameState = value;
+                OnGameStateChanged?.Invoke(currentGameState);
             }
         }
     }
-    public bool IsGOAL // ゴールフラグ取得プロパティ
-    {
-        get { return isGOAL; }
-        set { isGOAL = value; }
-    }
-    public bool IsGameOver // ゲームオーバーフラグ取得プロパティ
-    {
-        get { return isGameOver; }
-        set { isGameOver = value; }
-    }
+    public event Action<GameState> OnGameStateChanged; // ゲーム状態変更イベント
+
 
     void Awake()
     {
