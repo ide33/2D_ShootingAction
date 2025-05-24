@@ -77,7 +77,7 @@ public class StageManager : MonoBehaviour
     }
 
     // PlayerPrefs内のデータをリセットする
-    private void DeleteStageDate()
+    public void DeleteStageDate()
     {
         for (int i = 0; i < totalStages; i++)
         {
