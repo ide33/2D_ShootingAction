@@ -17,12 +17,14 @@ public class PlayerController : MonoBehaviour
     private float lastAttack;  // 最後に攻撃した時間
     private Rigidbody2D rb2d;  // Rigidbodyの変数
     private SpriteRenderer spriteRenderer;  // スプライトの変数
+    private Animator animator;  // アニメーターの変数
 
     void Start()
     {
         lastAttack = 0f;  // 最後の攻撃の値を初期化
         rb2d = GetComponent<Rigidbody2D>();  // Rigidbodyを取得
         spriteRenderer = GetComponent<SpriteRenderer>(); // spriteRendererの初期化
+        animator = GetComponent<Animator>();  // Animatorの取得
     }
 
     void Update()
@@ -34,11 +36,15 @@ public class PlayerController : MonoBehaviour
         {
             rb2d.linearVelocity = new Vector2(rb2d.linearVelocityX, 0);  // 上向きの速度をリセット
             rb2d.AddForce(new Vector2(0, jumpForce), ForceMode2D.Impulse);  // ジャンプの力を加える
+            animator.SetBool("IsJumping", true);
         }
 
         // 左右移動
         float horizontal = Input.GetAxis("Horizontal");  // 左右移動の入力をhorizontalに格納
         transform.Translate(Vector2.right * horizontal * speed * Time.deltaTime);  // horizontalで取得した方向に速度を掛ける
+        animator.SetBool("IsWalking", true);
+
+
 
         if (horizontal > 0)
         {
@@ -78,6 +84,7 @@ public class PlayerController : MonoBehaviour
                     moovStandBullet.UpwardFirinig(shootPoint, speed, direction);
                     lastAttack = Time.time;
                 }
+                animator.SetInteger("AttackType", 2);
             }
 
             // sキーが押されたら
@@ -98,6 +105,7 @@ public class PlayerController : MonoBehaviour
                     moovStandBullet.DownwardFirinig(shootPoint, speed, direction);
                     lastAttack = Time.time;
                 }
+                animator.SetInteger("AttackType", 3);
             }
 
             else
@@ -117,6 +125,7 @@ public class PlayerController : MonoBehaviour
                     moovStandBullet.ForwardFirinig(shootPoint, speed, direction);
                     lastAttack = Time.time;
                 }
+                animator.SetInteger("AttackType", 1);
             }
         }
     }
