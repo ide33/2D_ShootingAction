@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -36,13 +37,15 @@ public class PlayerController : MonoBehaviour
         {
             rb2d.linearVelocity = new Vector2(rb2d.linearVelocityX, 0);  // 上向きの速度をリセット
             rb2d.AddForce(new Vector2(0, jumpForce), ForceMode2D.Impulse);  // ジャンプの力を加える
-            animator.SetBool("IsJumping", true);
+
+            // bool isJumping = rb2d.linearVelocity.y > 0.1f && !IsGrounded();
+            // animator.SetBool("IsJumping", true);
         }
 
         // 左右移動
         float horizontal = Input.GetAxis("Horizontal");  // 左右移動の入力をhorizontalに格納
         transform.Translate(Vector2.right * horizontal * speed * Time.deltaTime);  // horizontalで取得した方向に速度を掛ける
-        animator.SetBool("IsWalking", true);
+        // animator.SetBool("IsWalking", Mathf.Abs(horizontal) > 0.01f);
 
 
 
@@ -127,6 +130,20 @@ public class PlayerController : MonoBehaviour
                 }
                 animator.SetInteger("AttackType", 1);
             }
+        }
+
+        animator.SetBool("IsWalking", Mathf.Abs(horizontal) > 0.01f);
+
+        bool isJumping = rb2d.linearVelocity.y > 0.1f && !IsGrounded();
+        bool isFalling = rb2d.linearVelocity.y > -0.1f && !IsGrounded();
+
+        animator.SetBool("IsJumping", isJumping);
+        animator.SetBool("IsFalling", isFalling);
+
+        bool isIdle = IsGrounded() && Mathf.Abs(horizontal) <= 0.01f && !isJumping && !isFalling;
+        if (isIdle)
+        {
+            animator.SetInteger("AttackType", 0);
         }
     }
 
