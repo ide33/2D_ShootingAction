@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 4126504162574568780}
   - component: {fileID: 367839620710159342}
   - component: {fileID: 4444040993350720168}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: CannonAmmo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -181,7 +181,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1899559900646125889}
   - component: {fileID: 1696106896330038339}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Square
   m_TagString: Untagged
   m_Icon: {fileID: 0}

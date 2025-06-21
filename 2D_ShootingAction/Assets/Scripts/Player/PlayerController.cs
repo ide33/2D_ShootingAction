@@ -24,8 +24,8 @@ public class PlayerController : MonoBehaviour
     {
         lastAttack = 0f;  // 最後の攻撃の値を初期化
         rb2d = GetComponent<Rigidbody2D>();  // Rigidbodyを取得
-        spriteRenderer = GetComponent<SpriteRenderer>(); // spriteRendererの初期化
-        animator = GetComponent<Animator>();  // Animatorの取得
+        spriteRenderer = GetComponentInChildren<SpriteRenderer>(); // spriteRendererの初期化
+        animator = GetComponentInChildren<Animator>();  // Animatorの取得
     }
 
     void Update()
@@ -57,14 +57,6 @@ public class PlayerController : MonoBehaviour
         {
             spriteRenderer.flipX = true;  //スプライトを左右反転した向きで表示
         }
-
-        // 発射位置の調整
-        float shootOffsetX = 0.6f;  // 弾の発射位置のオフセット(右向き)
-        if (spriteRenderer.flipX)
-        {
-            shootOffsetX = -0.6f;  // 左向きの場合、反対側に移動
-        }
-        shootPoint.localPosition = new Vector3(shootOffsetX, 0.3f, 0);
 
         // クールタイムをチェック
         if (Time.time - lastAttack >= shootCoolTime)
@@ -140,8 +132,9 @@ public class PlayerController : MonoBehaviour
         animator.SetBool("IsJumping", isJumping);
         animator.SetBool("IsFalling", isFalling);
 
-        bool isIdle = IsGrounded() && Mathf.Abs(horizontal) <= 0.01f && !isJumping && !isFalling;
-        if (isIdle)
+        // 攻撃していないときに待機モーションに移行
+        bool isAttacking = Input.GetKey(KeyCode.J) || Input.GetKey(KeyCode.K) || Input.GetKey(KeyCode.L);
+        if (!isAttacking)
         {
             animator.SetInteger("AttackType", 0);
         }

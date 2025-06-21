@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 1077206376976133158}
   - component: {fileID: 5272501648506462476}
   - component: {fileID: 7641947898171762148}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: FlotingAmmo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
