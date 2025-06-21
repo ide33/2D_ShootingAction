@@ -22,8 +22,10 @@ public class StandUnionObject : BaseUnionObject
     private SpriteRenderer _spriteRenderer; // 向き確認用
     // private Player_Move currentPlayer;      // プレイヤーの情報を保持する変数
 
-    void Start()
+    protected override void Start()
     {
+        base.Start(); // BaseUnionObjectのStartを呼び出す
+        
         // プロパティにデータを設定
         if (unionData == null)
         {

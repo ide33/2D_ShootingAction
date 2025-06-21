@@ -33,10 +33,13 @@ public class CannonUnionObject : BaseUnionObject
     private GameObject targetEnemy;                       // 範囲内にいる狙う対象
     private bool isFired = false;                         // クールタイムが終わっているか判定
     private SpriteRenderer _spriteRenderer;               // 向き確認用
+    private Collider2D _collider;                         // コライダー
     private int direction;                                // 発射する向き
 
-    void Start()
+    protected override void Start()
     {
+        base.Start(); // BaseUnionObjectのStartを呼び出す
+
         // プロパティにデータを設定
         if (unionData == null)
         {
@@ -54,15 +57,22 @@ public class CannonUnionObject : BaseUnionObject
 
         // 発射位置のX軸の位置を向きに応じて反転
         Vector3 localPosition = FiringPoint.transform.localPosition;
-        localPosition.y = Mathf.Abs(localPosition.y) * -direction; // Y軸を反転
+        localPosition.x = Mathf.Abs(localPosition.x) * direction; // X軸を反転
         FiringPoint.transform.localPosition = localPosition;
+
+        _collider = GetComponent<Collider2D>();
+
+        // コライダーの向きを向きに応じて反転
+        Vector2 colliderOffset = _collider.offset;
+        colliderOffset.x = Mathf.Abs(colliderOffset.x) * -direction; // X軸を反転
+        _collider.offset = colliderOffset;
 
         Destroy(gameObject, DestroyTime); // 指定時間後にオブジェクトを削除
     }
     public override void OnObjectCreate()
     {
         base.OnObjectCreate();
-    }   
+    }
     public override void OnObjectDestroy()
     {
         base.OnObjectDestroy();
@@ -108,7 +118,9 @@ public class CannonUnionObject : BaseUnionObject
     private GameObject EnemySearchRay()
     {
         // 大砲の前方の位置
-        Vector2 searchRadiusCenter = transform.position + transform.up * SearchPointDistance * -1 * direction;
+        Vector2 searchDirection = transform.right * direction; // 右方向
+        Vector2 searchRadiusCenter = (Vector2)transform.position + searchDirection * SearchPointDistance;
+
         // 指定した範囲内の敵コライダーを検出
         Collider2D[] Enemies = Physics2D.OverlapCircleAll(searchRadiusCenter, SearchDistance, TargetLayerMask);
 
@@ -145,8 +157,10 @@ public class CannonUnionObject : BaseUnionObject
         // ギズモの色を設定
         Gizmos.color = Color.red;
 
-        // 索敵範囲の中心を計算
-        Vector2 searchRadiusCenter = transform.position + transform.up * SearchPointDistance * -1 * direction;
+        // 右方向を基準に索敵範囲の中心を計算
+        int gizmoDirection = Application.isPlaying ? direction : 1;
+        Vector2 searchDirection = transform.right * gizmoDirection;
+        Vector2 searchRadiusCenter = (Vector2)transform.position + searchDirection * SearchPointDistance;
 
         // 索敵範囲をギズモで描画
         Gizmos.DrawWireSphere(searchRadiusCenter, SearchDistance);

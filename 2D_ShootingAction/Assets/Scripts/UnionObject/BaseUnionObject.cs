@@ -13,7 +13,7 @@ using UnityEngine;
 public abstract class BaseUnionObject : MonoBehaviour, IUnionObject
 {
     public UnionData unionData { get; set; } // 継承プロパティ
-    protected virtual void Awake()
+    protected virtual void Start()
     {
         if (UnionObjectManager.Instance == null)
         {

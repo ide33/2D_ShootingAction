@@ -31,8 +31,10 @@ public class FloatingUnionObject : BaseUnionObject
     private bool previousIsWall = false;    // 現在の壁接触判定
     // private Player_Move currentPlayer;      // プレイヤーの情報を保持する変数
 
-    void Start()
+    protected override void Start()
     {
+        base.Start(); // BaseUnionObjectのStartを呼び出す
+        
         // プロパティにデータを設定
         if (unionData == null)
         {
