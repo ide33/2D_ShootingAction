@@ -4,6 +4,17 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
+    private enum Player_State
+    {
+        Idle,
+        Walk,
+        Jump,
+        UpAttack,
+        Attack,
+        DownAttack,
+        Fall
+    }
+
     [SerializeField] private float speed = 5f;  // プレイヤーの速度
     [SerializeField] private float jumpForce = 5f;  // ジャンプの強さ
     [SerializeField] private float shootCoolTime = 0.3f;  // 攻撃のクールタイム
@@ -19,6 +30,9 @@ public class PlayerController : MonoBehaviour
     private Rigidbody2D rb2d;  // Rigidbodyの変数
     private SpriteRenderer spriteRenderer;  // スプライトの変数
     private Animator animator;  // アニメーターの変数
+    private float stateExitTime = 0;
+    private float jumpExitTime = 1.0f;
+    [SerializeField] private Player_State currentState = Player_State.Idle;  // 初期状態はIdle
 
     void Start()
     {
@@ -30,24 +44,189 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        Vector2 direction = spriteRenderer.flipX ? Vector2.left : Vector2.right;
+        switch (currentState)
+        {
+            case Player_State.Idle:
+                StateIdle();
+                break;
 
-        // スペースキーが押され、地面にいるとき
+            case Player_State.Walk:
+                StateWalk();
+                break;
+
+            case Player_State.Jump:
+                StateJump();
+                break;
+
+            case Player_State.UpAttack:
+                StateUpAttack();
+                break;
+
+            case Player_State.Attack:
+                StateAttack();
+                break;
+
+            case Player_State.DownAttack:
+                StateDownAttack();
+                break;
+
+            case Player_State.Fall:
+                StateFall();
+                break;
+
+        }
+
+        // Vector2 direction = spriteRenderer.flipX ? Vector2.left : Vector2.right;
+
+        // // スペースキーが押され、地面にいるとき
+        // if (Input.GetKeyDown(KeyCode.Space) && IsGrounded())
+        // {
+        //     rb2d.linearVelocity = new Vector2(rb2d.linearVelocityX, 0);  // 上向きの速度をリセット
+        //     rb2d.AddForce(new Vector2(0, jumpForce), ForceMode2D.Impulse);  // ジャンプの力を加える
+        // }
+
+        //     // 左右移動
+        //     float horizontal = Input.GetAxis("Horizontal");  // 左右移動の入力をhorizontalに格納
+        //     transform.Translate(Vector2.right * horizontal * speed * Time.deltaTime);  // horizontalで取得した方向に速度を掛ける
+
+
+        //     if (horizontal > 0)
+        //     {
+        //         spriteRenderer.flipX = false;  //スプライトを通常の向きで表示
+        //     }
+        //     else if (horizontal < 0)
+        //     {
+        //         spriteRenderer.flipX = true;  //スプライトを左右反転した向きで表示
+        //     }
+
+        //     // クールタイムをチェック
+        //     if (Time.time - lastAttack >= shootCoolTime)
+        //     {
+        //         // wキーが押されたら
+        //         if (Input.GetKey(KeyCode.W))
+        //         {
+        //             if (Input.GetKeyDown(KeyCode.J))  // jキーが押されたら
+        //             {
+        //                 standBullet.UpwardFirinig(shootPoint, speed, direction);
+        //                 lastAttack = Time.time;
+        //             }
+        //             else if (Input.GetKeyDown(KeyCode.L))  // lキーが押されたら
+        //             {
+        //                 cannonBullet.UpwardFirinig(shootPoint, speed, direction);
+        //                 lastAttack = Time.time;
+        //             }
+        //             else if (Input.GetKeyDown(KeyCode.K))  // kキーが押されたら
+        //             {
+        //                 moovStandBullet.UpwardFirinig(shootPoint, speed, direction);
+        //                 lastAttack = Time.time;
+        //             }
+        //             animator.SetInteger("AttackType", 2);
+        //         }
+
+        //         // sキーが押されたら
+        //         else if (Input.GetKey(KeyCode.S))
+        //         {
+        //             if (Input.GetKeyDown(KeyCode.J))  // jキーが押されたら
+        //             {
+        //                 standBullet.DownwardFirinig(shootPoint, speed, direction);
+        //                 lastAttack = Time.time;
+        //             }
+        //             else if (Input.GetKeyDown(KeyCode.L))  // lキーが押されたら
+        //             {
+        //                 cannonBullet.DownwardFirinig(shootPoint, speed, direction);
+        //                 lastAttack = Time.time;
+        //             }
+        //             else if (Input.GetKeyDown(KeyCode.K))  // kキーが押されたら
+        //             {
+        //                 moovStandBullet.DownwardFirinig(shootPoint, speed, direction);
+        //                 lastAttack = Time.time;
+        //             }
+        //             animator.SetInteger("AttackType", 3);
+        //         }
+
+        //         else
+        //         {
+        //             if (Input.GetKeyDown(KeyCode.J))  // jキーが押されたら
+        //             {
+        //                 standBullet.ForwardFirinig(shootPoint, speed, direction);
+        //                 lastAttack = Time.time;
+        //             }
+        //             else if (Input.GetKeyDown(KeyCode.L))  // lキーが押されたら
+        //             {
+        //                 cannonBullet.ForwardFirinig(shootPoint, speed, direction);
+        //                 lastAttack = Time.time;
+        //             }
+        //             else if (Input.GetKeyDown(KeyCode.K))  // kキーが押されたら
+        //             {
+        //                 moovStandBullet.ForwardFirinig(shootPoint, speed, direction);
+        //                 lastAttack = Time.time;
+        //             }
+        //             animator.SetInteger("AttackType", 1);
+        //         }
+        //     }
+
+        //     animator.SetBool("IsWalking", Mathf.Abs(horizontal) > 0.01f);
+
+        //     bool isJumping = rb2d.linearVelocity.y > 0.1f && !IsGrounded();
+        //     bool isFalling = rb2d.linearVelocity.y > -0.1f && !IsGrounded();
+
+        //     animator.SetBool("IsJumping", isJumping);
+        //     animator.SetBool("IsFalling", isFalling);
+
+        //     // 攻撃していないときに待機モーションに移行
+        //     bool isAttacking = Input.GetKey(KeyCode.J) || Input.GetKey(KeyCode.K) || Input.GetKey(KeyCode.L);
+        //     if (!isAttacking)
+        //     {
+        //         animator.SetInteger("AttackType", 0);
+        //     }
+    }
+
+    private void StateIdle()
+    {
+        if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))
+        {
+            StateChange(Player_State.Walk);
+        }
+
         if (Input.GetKeyDown(KeyCode.Space) && IsGrounded())
         {
-            rb2d.linearVelocity = new Vector2(rb2d.linearVelocityX, 0);  // 上向きの速度をリセット
-            rb2d.AddForce(new Vector2(0, jumpForce), ForceMode2D.Impulse);  // ジャンプの力を加える
-
-            // bool isJumping = rb2d.linearVelocity.y > 0.1f && !IsGrounded();
-            // animator.SetBool("IsJumping", true);
+            StateChange(Player_State.Jump);
         }
+    }
+
+    private void StateWalk()
+    {
+        // 左右移動
+        float horizontal = Input.GetAxis("Horizontal");  // 左右移動の入力をhorizontalに格納
+        transform.Translate(Vector2.right * horizontal * speed * Time.deltaTime);  // horizontalで取得した方向に速度を掛ける
+
+        if (Input.GetKeyDown(KeyCode.Space) && IsGrounded())
+        {
+            StateChange(Player_State.Jump);
+        }
+
+        if (horizontal == 0)
+        {
+            StateChange(Player_State.Idle);
+        }
+
+        if (horizontal > 0)
+        {
+            spriteRenderer.flipX = false;  //スプライトを通常の向きで表示
+        }
+        else if (horizontal < 0)
+        {
+            spriteRenderer.flipX = true;  //スプライトを左右反転した向きで表示
+        }
+    }
+
+    private void StateJump()
+    {
+        stateExitTime += Time.deltaTime;
 
         // 左右移動
         float horizontal = Input.GetAxis("Horizontal");  // 左右移動の入力をhorizontalに格納
         transform.Translate(Vector2.right * horizontal * speed * Time.deltaTime);  // horizontalで取得した方向に速度を掛ける
-        // animator.SetBool("IsWalking", Mathf.Abs(horizontal) > 0.01f);
-
-
 
         if (horizontal > 0)
         {
@@ -58,86 +237,122 @@ public class PlayerController : MonoBehaviour
             spriteRenderer.flipX = true;  //スプライトを左右反転した向きで表示
         }
 
-        // クールタイムをチェック
-        if (Time.time - lastAttack >= shootCoolTime)
+        if (stateExitTime >= jumpExitTime)
         {
-            // wキーが押されたら
-            if (Input.GetKey(KeyCode.W))
-            {
-                if (Input.GetKeyDown(KeyCode.J))  // jキーが押されたら
-                {
-                    standBullet.UpwardFirinig(shootPoint, speed, direction);
-                    lastAttack = Time.time;
-                }
-                else if (Input.GetKeyDown(KeyCode.L))  // lキーが押されたら
-                {
-                    cannonBullet.UpwardFirinig(shootPoint, speed, direction);
-                    lastAttack = Time.time;
-                }
-                else if (Input.GetKeyDown(KeyCode.K))  // kキーが押されたら
-                {
-                    moovStandBullet.UpwardFirinig(shootPoint, speed, direction);
-                    lastAttack = Time.time;
-                }
-                animator.SetInteger("AttackType", 2);
-            }
+            StateChange(Player_State.Fall);
+        }
+    }
 
-            // sキーが押されたら
-            else if (Input.GetKey(KeyCode.S))
-            {
-                if (Input.GetKeyDown(KeyCode.J))  // jキーが押されたら
-                {
-                    standBullet.DownwardFirinig(shootPoint, speed, direction);
-                    lastAttack = Time.time;
-                }
-                else if (Input.GetKeyDown(KeyCode.L))  // lキーが押されたら
-                {
-                    cannonBullet.DownwardFirinig(shootPoint, speed, direction);
-                    lastAttack = Time.time;
-                }
-                else if (Input.GetKeyDown(KeyCode.K))  // kキーが押されたら
-                {
-                    moovStandBullet.DownwardFirinig(shootPoint, speed, direction);
-                    lastAttack = Time.time;
-                }
-                animator.SetInteger("AttackType", 3);
-            }
+    private void StateUpAttack()
+    {
 
-            else
-            {
-                if (Input.GetKeyDown(KeyCode.J))  // jキーが押されたら
-                {
-                    standBullet.ForwardFirinig(shootPoint, speed, direction);
-                    lastAttack = Time.time;
-                }
-                else if (Input.GetKeyDown(KeyCode.L))  // lキーが押されたら
-                {
-                    cannonBullet.ForwardFirinig(shootPoint, speed, direction);
-                    lastAttack = Time.time;
-                }
-                else if (Input.GetKeyDown(KeyCode.K))  // kキーが押されたら
-                {
-                    moovStandBullet.ForwardFirinig(shootPoint, speed, direction);
-                    lastAttack = Time.time;
-                }
-                animator.SetInteger("AttackType", 1);
-            }
+    }
+
+    private void StateAttack()
+    {
+
+    }
+
+    private void StateDownAttack()
+    {
+
+    }
+
+    private void StateFall()
+    {
+        // 左右移動
+        float horizontal = Input.GetAxis("Horizontal");  // 左右移動の入力をhorizontalに格納
+        transform.Translate(Vector2.right * horizontal * speed * Time.deltaTime);  // horizontalで取得した方向に速度を掛ける
+
+        if (horizontal > 0)
+        {
+            spriteRenderer.flipX = false;  //スプライトを通常の向きで表示
+        }
+        else if (horizontal < 0)
+        {
+            spriteRenderer.flipX = true;  //スプライトを左右反転した向きで表示
         }
 
-        animator.SetBool("IsWalking", Mathf.Abs(horizontal) > 0.01f);
-
-        bool isJumping = rb2d.linearVelocity.y > 0.1f && !IsGrounded();
-        bool isFalling = rb2d.linearVelocity.y > -0.1f && !IsGrounded();
-
-        animator.SetBool("IsJumping", isJumping);
-        animator.SetBool("IsFalling", isFalling);
-
-        // 攻撃していないときに待機モーションに移行
-        bool isAttacking = Input.GetKey(KeyCode.J) || Input.GetKey(KeyCode.K) || Input.GetKey(KeyCode.L);
-        if (!isAttacking)
+        if (IsGrounded())
         {
-            animator.SetInteger("AttackType", 0);
+            StateChange(Player_State.Idle);
         }
+    }
+
+    private void StateChange(Player_State newState)
+    {
+        // 現在のStateを離れるときの処理
+        if (currentState == Player_State.Idle)
+        {
+            // Idle状態を離れるとき
+        }
+        else if (currentState == Player_State.Walk)
+        {
+            // Walk状態を離れるとき
+            animator.SetBool("IsWalking", false);
+        }
+        else if (currentState == Player_State.Jump)
+        {
+            // Jump状態を離れるとき
+            animator.SetBool("IsJumping", false);
+            stateExitTime = 0f;
+        }
+        else if (currentState == Player_State.UpAttack)
+        {
+            // UpAttack状態を離れるとき
+        }
+        else if (currentState == Player_State.Attack)
+        {
+            // Attack状態を離れるとき
+        }
+        else if (currentState == Player_State.DownAttack)
+        {
+            // DownAttack状態を離れるとき
+        }
+        else if (currentState == Player_State.Fall)
+        {
+            // Fall状態を離れるとき
+            animator.SetBool("IsFalling", false);
+        }
+
+        // 新しいStateに入るときの処理
+        if (newState == Player_State.Idle)
+        {
+            // Idle状態に入るとき
+        }
+        else if (newState == Player_State.Walk)
+        {
+            // Walk状態に入るとき
+            animator.SetBool("IsWalking", true);
+        }
+        else if (newState == Player_State.Jump)
+        {
+            // Jump状態に入るとき
+            rb2d.linearVelocity = new Vector2(rb2d.linearVelocityX, 0);  // 上向きの速度をリセット
+            rb2d.AddForce(new Vector2(0, jumpForce), ForceMode2D.Impulse);  // ジャンプの力を加える
+
+            animator.SetBool("IsJumping", true);
+        }
+        else if (newState == Player_State.UpAttack)
+        {
+            // UpAttack状態に入るとき
+        }
+        else if (currentState == Player_State.Attack)
+        {
+            // Attack状態を離れるとき
+        }
+        else if (currentState == Player_State.DownAttack)
+        {
+            // DownAttack状態を離れるとき
+        }
+        else if (newState == Player_State.Fall)
+        {
+            // Fall状態に入るとき
+            animator.SetBool("IsFalling", true);
+        }
+
+        currentState = newState;  // 状態を更新
+        Debug.Log("状態を更新");
     }
 
     private bool IsGrounded()

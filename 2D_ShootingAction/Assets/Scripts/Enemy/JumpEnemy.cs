@@ -18,7 +18,7 @@ public class JumpEnemy : MonoBehaviour, IDamageable
 
     private float jumpCooldown = 1f;  // ジャンプの間隔
     private float jumpTimer = 0f;  // タイマー管理
-    private float currentjumoForce;  // 現在の上方向への力
+    private float currentjumpForce;  // 現在の上方向への力
     private float currentsideForce;  // 現在の横方向への力
     private int currentHealth;  // 現在のHp
     private int direction = -1;  // 1:右へ移動, -1:左へ移動
@@ -39,7 +39,7 @@ public class JumpEnemy : MonoBehaviour, IDamageable
         switch (currentState)
         {
             case Jp_State.Jump:
-                currentjumoForce = jumpForce;
+                currentjumpForce = jumpForce;
                 currentsideForce = sideForce;
 
                 // jump状態の処理
@@ -74,7 +74,7 @@ public class JumpEnemy : MonoBehaviour, IDamageable
         rb.linearVelocity = Vector2.zero;
 
         // 現在の方向にジャンプ
-        rb.AddForce(new Vector2(direction * currentsideForce, currentjumoForce), ForceMode2D.Impulse);
+        rb.AddForce(new Vector2(direction * currentsideForce, currentjumpForce), ForceMode2D.Impulse);
     }
 
     // 方向転換メソッド
