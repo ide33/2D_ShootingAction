@@ -19,6 +19,7 @@ public class FloatingUnionObject : BaseUnionObject
     [SerializeField] private float WallClimbSpeed = 3f;   // 壁を登る速度
     [SerializeField] private float WallDistance = 0.2f;   // 登る時の壁との距離
     [SerializeField] private LayerMask WallMask;          // 壁とするレイヤー
+    [SerializeField] private float WallCheckDistance = 0.1f; // 壁チェックの距離
 
     [Header("消滅時間")]
     [SerializeField] private float DestroyTime = 5f;      // 消滅時間
@@ -28,13 +29,16 @@ public class FloatingUnionObject : BaseUnionObject
     private Rigidbody2D _rigidbody2D;       // 移動用
     private SpriteRenderer _spriteRenderer; // 向き確認用
     private int direction;                  // 移動する向き
+    private Collider2D _collider;
+    private BoxCollider2D _boxCollider;
+    private bool _isBoxCollider;
     private bool previousIsWall = false;    // 現在の壁接触判定
     // private Player_Move currentPlayer;      // プレイヤーの情報を保持する変数
 
     protected override void Start()
     {
         base.Start(); // BaseUnionObjectのStartを呼び出す
-        
+
         // プロパティにデータを設定
         if (unionData == null)
         {
@@ -48,12 +52,17 @@ public class FloatingUnionObject : BaseUnionObject
         // 移動する向きをSpriteRendererの向きから取得
         direction = _spriteRenderer.flipX ? -1 : 1;
 
+        // コライダー取得・判別
+        _collider = GetComponent<Collider2D>();
+        _boxCollider = _collider as BoxCollider2D;
+        _isBoxCollider = _boxCollider != null;
+
         Destroy(gameObject, DestroyTime); // 指定時間後にオブジェクトを削除
     }
     public override void OnObjectCreate()
     {
         base.OnObjectCreate();
-    }   
+    }
     public override void OnObjectDestroy()
     {
         base.OnObjectDestroy();
@@ -96,18 +105,32 @@ public class FloatingUnionObject : BaseUnionObject
         bool _isWall;
         float rayLength = WallDistance;
         var layerMask = WallMask;
+        Vector2 bottomPosition;
 
-        // コライダーを取得
-        Collider2D col = GetComponent<Collider2D>();
-
-        // 向きに応じてコライダーの移動方向の最下を取得
-        float colDirection = direction >= 1 ? col.bounds.max.x : col.bounds.min.x;
-
-        // コライダーの移動方向の最下の位置を取得
-        Vector2 bottomPosition = new Vector2(colDirection, col.bounds.min.y + 0.1f);
+        if (_isBoxCollider)
+        {
+            // BoxCollider2Dの場合はoffsetとsizeを考慮して端の下側を計算
+            Vector2 boxCenter = (Vector2)_boxCollider.transform.position + _boxCollider.offset;
+            float x = direction >= 1
+                ? boxCenter.x + (_boxCollider.size.x * 0.5f * _boxCollider.transform.lossyScale.x)
+                : boxCenter.x - (_boxCollider.size.x * 0.5f * _boxCollider.transform.lossyScale.x);
+            float y = boxCenter.y - (_boxCollider.size.y * 0.5f * _boxCollider.transform.lossyScale.y) + WallCheckDistance;
+            bottomPosition = new Vector2(x, y);
+            Debug.Log($"BoxCollider2Dの位置: {bottomPosition}");
+        }
+        else
+        {
+            // 他のコライダーの場合
+            float x = direction >= 1 ? _collider.bounds.max.x : _collider.bounds.min.x;
+            float y = _collider.bounds.min.y + WallCheckDistance;
+            bottomPosition = new Vector2(x, y);
+        }
 
         // 向きに応じた方向にレイを発射して、すぐ先に壁があるか判定
-        _isWall = Physics2D.Raycast(bottomPosition, direction >= 1 ? Vector2.right : Vector2.left, rayLength, layerMask);
+        RaycastHit2D hit = Physics2D.Raycast(bottomPosition, direction >= 1 ? Vector2.right : Vector2.left, rayLength, layerMask);
+
+        // ヒットした場合、自分自身のコライダーでなければtrue
+        _isWall = hit.collider != null && hit.collider != _collider;
 
         // シーン上でレイを表示（緑で表示、判定取得で赤で表示）
         Debug.DrawRay(bottomPosition, direction >= 1 ? Vector2.right * rayLength : Vector2.left * rayLength, _isWall ? Color.green : Color.red);
