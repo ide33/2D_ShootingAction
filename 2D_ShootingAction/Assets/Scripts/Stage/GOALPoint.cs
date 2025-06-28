@@ -11,7 +11,7 @@ public class GOALPoint : MonoBehaviour
     [Header("現在のステージの番号を入力")]
     [SerializeField] private int UNLOCK_STAGE_NUMBER; // 解放するステージの番号
 
-    private void Awake()
+    private void Start()
     {
         GameManager.Instance.currentGameState = GameState.Game; // ゲーム状態をゲームに設定
     }
