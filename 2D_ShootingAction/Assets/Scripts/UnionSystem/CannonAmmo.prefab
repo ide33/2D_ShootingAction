@@ -166,7 +166,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 03e851c2705d65b4ebc5abdcc51bd662, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  UnionObject: {fileID: 6315404228457025950, guid: 6c6680e1f027d6f42b7bb231166f9cb1, type: 3}
+  UnionObject: {fileID: 1035273438542220210, guid: 34fca1095ef44f845afc0155401b0e44, type: 3}
   checkRadius: 0.5
   AmmoUnionData:
     unionDataNeme: Cannon
