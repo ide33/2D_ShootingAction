@@ -32,6 +32,9 @@ public class PlayerController : MonoBehaviour
     private Animator animator;  // アニメーターの変数
     private float stateExitTime = 0;
     private float jumpExitTime = 1.0f;
+    private bool attackStarted = false;
+    private float horizontal;
+
     [SerializeField] private Player_State currentState = Player_State.Idle;  // 初期状態はIdle
 
     void Start()
@@ -75,8 +78,6 @@ public class PlayerController : MonoBehaviour
                 break;
 
         }
-
-        // Vector2 direction = spriteRenderer.flipX ? Vector2.left : Vector2.right;
 
         // // スペースキーが押され、地面にいるとき
         // if (Input.GetKeyDown(KeyCode.Space) && IsGrounded())
@@ -192,13 +193,52 @@ public class PlayerController : MonoBehaviour
         {
             StateChange(Player_State.Jump);
         }
+
+        // クールタイムをチェック
+        if (Time.time - lastAttack >= shootCoolTime)
+        {
+            // wキーが押されたら
+            if (Input.GetKey(KeyCode.W))
+            {
+                if (Input.GetKeyDown(KeyCode.J) || Input.GetKeyDown(KeyCode.K) || Input.GetKeyDown(KeyCode.L))  // jキーが押されたら
+                {
+                    StateChange(Player_State.UpAttack);
+                }
+            }
+
+            // Sキーが押されたら
+            else if (Input.GetKey(KeyCode.S))
+            {
+                if (Input.GetKeyDown(KeyCode.J) || Input.GetKeyDown(KeyCode.K) || Input.GetKeyDown(KeyCode.L))  // jキーが押されたら
+                {
+                    StateChange(Player_State.DownAttack);
+                }
+            }
+
+            else
+            {
+                if (Input.GetKeyDown(KeyCode.J) || Input.GetKeyDown(KeyCode.K) || Input.GetKeyDown(KeyCode.L))  // jキーが押されたら
+                {
+                    StateChange(Player_State.Attack);
+                }
+            }
+        }
     }
 
     private void StateWalk()
     {
         // 左右移動
-        float horizontal = Input.GetAxis("Horizontal");  // 左右移動の入力をhorizontalに格納
+        horizontal = Input.GetAxis("Horizontal");  // 左右移動の入力をhorizontalに格納
         transform.Translate(Vector2.right * horizontal * speed * Time.deltaTime);  // horizontalで取得した方向に速度を掛ける
+
+        if (horizontal > 0)
+        {
+            spriteRenderer.flipX = false;  //スプライトを通常の向きで表示
+        }
+        else if (horizontal < 0)
+        {
+            spriteRenderer.flipX = true;  //スプライトを左右反転した向きで表示
+        }
 
         if (Input.GetKeyDown(KeyCode.Space) && IsGrounded())
         {
@@ -208,15 +248,6 @@ public class PlayerController : MonoBehaviour
         if (horizontal == 0)
         {
             StateChange(Player_State.Idle);
-        }
-
-        if (horizontal > 0)
-        {
-            spriteRenderer.flipX = false;  //スプライトを通常の向きで表示
-        }
-        else if (horizontal < 0)
-        {
-            spriteRenderer.flipX = true;  //スプライトを左右反転した向きで表示
         }
     }
 
@@ -245,17 +276,101 @@ public class PlayerController : MonoBehaviour
 
     private void StateUpAttack()
     {
+        Vector2 direction = spriteRenderer.flipX ? Vector2.left : Vector2.right;
 
+        if (!attackStarted)
+        {
+            if (Input.GetKey(KeyCode.J))  // jキーが押されたら
+            {
+                standBullet.UpwardFirinig(shootPoint, speed, direction);
+            }
+
+            else if (Input.GetKey(KeyCode.L))  // lキーが押されたら
+            {
+                cannonBullet.UpwardFirinig(shootPoint, speed, direction);
+            }
+
+            else if (Input.GetKey(KeyCode.K))  // kキーが押されたら
+            {
+                moovStandBullet.UpwardFirinig(shootPoint, speed, direction);
+            }
+
+            animator.SetInteger("AttackType", 2);
+            lastAttack = Time.time;
+            attackStarted = true;
+        }
+
+        if (Time.time - lastAttack >= 0.3f)
+        {
+            animator.SetInteger("AttackType", 0);
+            StateChange(Player_State.Idle);
+        }
     }
 
     private void StateAttack()
     {
+        Vector2 direction = spriteRenderer.flipX ? Vector2.left : Vector2.right;
 
+        if (!attackStarted)
+        {
+            if (Input.GetKey(KeyCode.J))  // jキーが押されたら
+            {
+                standBullet.ForwardFirinig(shootPoint, speed, direction);
+            }
+
+            else if (Input.GetKey(KeyCode.L))  // lキーが押されたら
+            {
+                cannonBullet.ForwardFirinig(shootPoint, speed, direction);
+            }
+
+            else if (Input.GetKey(KeyCode.K))  // kキーが押されたら
+            {
+                moovStandBullet.ForwardFirinig(shootPoint, speed, direction);
+            }
+
+            animator.SetInteger("AttackType", 1);
+            lastAttack = Time.time;
+            attackStarted = true;
+        }
+
+        if (Time.time - lastAttack >= 0.3f)
+        {
+            animator.SetInteger("AttackType", 0);
+            StateChange(Player_State.Idle);
+        }
     }
 
     private void StateDownAttack()
     {
+        Vector2 direction = spriteRenderer.flipX ? Vector2.left : Vector2.right;
 
+        if (!attackStarted)
+        {
+            if (Input.GetKey(KeyCode.J))  // jキーが押されたら
+            {
+                standBullet.DownwardFirinig(shootPoint, speed, direction);
+            }
+
+            else if (Input.GetKey(KeyCode.L))  // lキーが押されたら
+            {
+                cannonBullet.DownwardFirinig(shootPoint, speed, direction);
+            }
+
+            else if (Input.GetKey(KeyCode.K))  // kキーが押されたら
+            {
+                moovStandBullet.DownwardFirinig(shootPoint, speed, direction);
+            }
+
+            animator.SetInteger("AttackType", 3);
+            lastAttack = Time.time;
+            attackStarted = true;
+        }
+
+        if (Time.time - lastAttack >= 0.3f)
+        {
+            animator.SetInteger("AttackType", 0);
+            StateChange(Player_State.Idle);
+        }
     }
 
     private void StateFall()
@@ -300,14 +415,17 @@ public class PlayerController : MonoBehaviour
         else if (currentState == Player_State.UpAttack)
         {
             // UpAttack状態を離れるとき
+            attackStarted = false;
         }
         else if (currentState == Player_State.Attack)
         {
             // Attack状態を離れるとき
+            attackStarted = false;
         }
         else if (currentState == Player_State.DownAttack)
         {
             // DownAttack状態を離れるとき
+            attackStarted = false;
         }
         else if (currentState == Player_State.Fall)
         {
