@@ -182,9 +182,9 @@ MonoBehaviour:
   CannonObjectAmmo: {fileID: 1557515865136019865, guid: a0eb9e1f319b76a46bf1fd360335cf03, type: 3}
   FireCooltime: 3
   GravityScale: 1
-  InitialVelocityX: 8
-  SearchDistance: 8
-  SearchPointDistance: 10
+  InitialVelocityX: 6
+  SearchDistance: 5
+  SearchPointDistance: 7
   TargetLayerMask:
     serializedVersion: 2
     m_Bits: 0

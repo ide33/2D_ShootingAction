@@ -117837,7 +117837,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2345473048049806607, guid: 0c76e8ff8e1e01c498b48d9c897f8618, type: 3}
       propertyPath: 'SCENE_NAME.Array.data[0]'
-      value: 3Stage
+      value: StageSelectScene
       objectReference: {fileID: 0}
     - target: {fileID: 2954554749539002479, guid: 0c76e8ff8e1e01c498b48d9c897f8618, type: 3}
       propertyPath: m_Name

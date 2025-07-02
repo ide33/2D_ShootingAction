@@ -45,6 +45,7 @@ public class UIGOALText : MonoBehaviour
 
     private void Start()
     {
+        GameManager.Instance.CurrentGameState = GameState.Game;
         // 初期化の際、設定忘れ防止でオブジェクトを非表示にする
         if (FirstActive != null)
         {
