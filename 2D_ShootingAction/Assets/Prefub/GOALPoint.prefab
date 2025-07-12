@@ -102,6 +102,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   UNLOCK_STAGE_NUMBER: 1
+  SE_Name: "SE \u6C7A\u5B9A\u30DC\u30BF\u30F3\u3092\u62BC\u305937_GOAL"
 --- !u!61 &88401992311695148
 BoxCollider2D:
   m_ObjectHideFlags: 0

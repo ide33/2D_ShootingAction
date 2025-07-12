@@ -866,6 +866,8 @@ MonoBehaviour:
   SCENE_NAME:
   - 1Stage
   - StageSelectScene
+  SE_CHANGE_NAME: SE SelectMove
+  SE_SELECT_NAME: 
 --- !u!114 &7799112834774839409
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1526,6 +1528,8 @@ MonoBehaviour:
   SCENE_NAME:
   - 2Stage
   - StageSelectScene
+  SE_CHANGE_NAME: SE SelectMove
+  SE_SELECT_NAME: 
 --- !u!114 &8544325223288480805
 MonoBehaviour:
   m_ObjectHideFlags: 0

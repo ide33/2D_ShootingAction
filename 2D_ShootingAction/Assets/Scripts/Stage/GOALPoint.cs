@@ -11,6 +11,9 @@ public class GOALPoint : MonoBehaviour
     [Header("現在のステージの番号を入力")]
     [SerializeField] private int UNLOCK_STAGE_NUMBER; // 解放するステージの番号
 
+    [Header("ゴール時に再生するSE名を入力")]
+    [SerializeField] private string SE_Name; 
+
     private void Start()
     {
         GameManager.Instance.currentGameState = GameState.Game; // ゲーム状態をゲームに設定
@@ -26,6 +29,10 @@ public class GOALPoint : MonoBehaviour
                 StageManager.Instance.UnlockStage(UNLOCK_STAGE_NUMBER); // ステージを解放
             }
             Debug.Log($"GOALPoint: Stage {UNLOCK_STAGE_NUMBER} unlocked!"); // デバッグログ出力
+            if (SE_Name != null)
+            {
+                SoundManager.Instance.PlaySE(SE_Name); // SEを再生
+            }
 
             GameManager.Instance.CurrentGameState = GameState.Clear; // ゲーム状態をクリアに設定
         }

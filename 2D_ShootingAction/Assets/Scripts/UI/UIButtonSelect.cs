@@ -18,11 +18,11 @@ public class UIButtonSelect : MonoBehaviour
     [Header("遷移するシーンの名前")]
     [SerializeField] private string[] SCENE_NAME;     // 遷移するシーンの名前
 
-    // [Header("ボタン選択のSE")]
-    // [SerializeField] private string SE_CHANGE_NAME;   // 選択のSEの名前
+    [Header("ボタン選択のSE")]
+    [SerializeField] private string SE_CHANGE_NAME;   // 選択のSEの名前
 
-    // [Header("ボタン決定のSE")]
-    // [SerializeField] private string SE_SELECT_NAME;   // 決定のSEの名前
+    [Header("ボタン決定のSE")]
+    [SerializeField] private string SE_SELECT_NAME;   // 決定のSEの名前
 
     // 内部処理する変数
     private int selectedButtunIndex = 0; // 現在選択中のボタン
@@ -73,10 +73,10 @@ public class UIButtonSelect : MonoBehaviour
                 selectedButtunIndex = SelectButtons.Length - 1;
             }
 
-            // if (SE_CHANGE_NAME != null)
-            // {
-            //     SoundManager.Instance.PlaySE(SE_CHANGE_NAME); // SEを再生
-            // }
+            if (SE_CHANGE_NAME != null)
+            {
+                SoundManager.Instance.PlaySE(SE_CHANGE_NAME); // SEを再生
+            }
 
             HighlightSelectedButton(); // 選択したボタンをハイライト表示
 
@@ -91,10 +91,10 @@ public class UIButtonSelect : MonoBehaviour
                 selectedButtunIndex = 0;
             }
 
-            // if (SE_CHANGE_NAME != null)
-            // {
-            //     SoundManager.Instance.PlaySE(SE_CHANGE_NAME); // SEを再生
-            // }
+            if (SE_CHANGE_NAME != null)
+            {
+                SoundManager.Instance.PlaySE(SE_CHANGE_NAME); // SEを再生
+            }
 
             HighlightSelectedButton(); // 選択したボタンをハイライト表示
 
@@ -103,10 +103,10 @@ public class UIButtonSelect : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Return))
         {
-            // if (SE_SELECT_NAME != null)
-            // {
-            //     SoundManager.Instance.PlaySE(SE_SELECT_NAME); // SEを再生
-            // }
+            if (SE_SELECT_NAME != null)
+            {
+                SoundManager.Instance.PlaySE(SE_SELECT_NAME); // SEを再生
+            }
             
             SelectButtun(selectedButtunIndex);
 
