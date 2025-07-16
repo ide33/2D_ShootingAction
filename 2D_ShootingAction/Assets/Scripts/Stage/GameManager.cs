@@ -50,4 +50,16 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject); // 既にインスタンスが存在する場合は、重複しないように破棄
         }
     }
+
+    // ゲームの時間を止めるメソッド
+    public void GameTimeStop()
+    {
+        Time.timeScale = 0f;
+    }
+
+    // ゲームの時間を再開するメソッド
+    public void GameTimeStart()
+    {
+        Time.timeScale = 1f;
+    }
 }

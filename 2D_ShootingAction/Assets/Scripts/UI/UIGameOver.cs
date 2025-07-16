@@ -28,8 +28,8 @@ public class UIGameOver : MonoBehaviour
     [SerializeField] private float NextActiveTime = 2; // ウィンドウ表示までの時間
     [SerializeField] private float FadeInTime = 1; // フェード効果を反映させる時間
 
-    // [Header("ゲームオーバー時のSE")]
-    // [SerializeField] private string SE_NAME; // SEの名前
+    [Header("ゲームオーバー時のSE")]
+    [SerializeField] private string SE_NAME; // SEの名前
 
     private void Start()
     {
@@ -72,10 +72,10 @@ public class UIGameOver : MonoBehaviour
             FadeInGraphics(FirstFadeIn, FadeInTime);
         }
 
-        // if (SE_NAME != null)
-        // {
-        //     SoundManager.Instance.PlaySE(SE_NAME); // SEを再生
-        // }
+        if (SE_NAME != null)
+        {
+            SoundManager.Instance.PlaySE(SE_NAME); // SEを再生
+        }
 
         // ウィンドウ表示までの時間待機
         yield return new WaitForSeconds(NextActiveTime);
