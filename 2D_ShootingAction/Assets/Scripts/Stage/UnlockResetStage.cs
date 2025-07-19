@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class UnlockResetStage : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    [SerializeField] private string SceneName;
     void Start()
     {
         
@@ -15,6 +15,7 @@ public class UnlockResetStage : MonoBehaviour
         {
             StageManager.Instance.DeleteStageDate(); // Rキーが押されたらステージの解放状況をリセット
             Debug.Log("UnlockResetStage: Stage data reset!"); // デバッグログ出力
+            SceneChangeManager.Instance.ChangeSceneLoad(SceneName);
         }
     }
 }
