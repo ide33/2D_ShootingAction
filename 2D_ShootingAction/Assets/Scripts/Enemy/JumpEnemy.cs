@@ -5,7 +5,8 @@ public class JumpEnemy : MonoBehaviour, IDamageable
 {
     private enum Jp_State
     {
-        Jump
+        Jump,
+        Landing
     }
 
     [SerializeField] private float jumpForce = 8f;  // 上方向の力
@@ -23,15 +24,19 @@ public class JumpEnemy : MonoBehaviour, IDamageable
     private int currentHealth;  // 現在のHp
     private int direction = -1;  // 1:右へ移動, -1:左へ移動
     private bool isWallhit;  // 壁に当たったかどうか
+    private Animator animator;
 
     private Rigidbody2D rb;  // Rigidbodyの変数
 
-    private Jp_State currentState = Jp_State.Jump;  // 初期状態はjump
+    private Jp_State currentState = Jp_State.Landing;  // 初期状態はlanding
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();  // Rigidbody2Dを取得
         currentHealth = maxHealth;  // Hpを初期化
+        animator = GetComponent<Animator>();
+
+        StateChange(Jp_State.Landing);
     }
 
     void Update()
@@ -45,6 +50,12 @@ public class JumpEnemy : MonoBehaviour, IDamageable
                 // jump状態の処理
                 StateJump();
                 break;
+
+            case Jp_State.Landing:
+
+                // landing状態の処理
+                StateLanding();
+                break;
         }
     }
 
@@ -53,11 +64,11 @@ public class JumpEnemy : MonoBehaviour, IDamageable
         // jumpTimerに前フレームからの経過時間を足す
         jumpTimer += Time.deltaTime;
 
-        // 地面にいて且つjumpTimerがクールダウンの値より小さければジャンプ
+        // 地面にいて且つjumpTimerがクールダウンの値より大きければジャンプ
         if (isGrounded() && jumpTimer >= jumpCooldown)
         {
-            Jumping();
             jumpTimer = 0f;
+            StateChange(Jp_State.Landing);
         }
 
         // 壁にぶつかったら
@@ -77,6 +88,46 @@ public class JumpEnemy : MonoBehaviour, IDamageable
         rb.AddForce(new Vector2(direction * currentsideForce, currentjumpForce), ForceMode2D.Impulse);
     }
 
+    private void StateLanding()
+    {
+        // jumpTimerに前フレームからの経過時間を足す
+        jumpTimer += Time.deltaTime;
+
+        if (isGrounded() && jumpTimer >= jumpCooldown)
+        {
+            jumpTimer = 0f;
+            StateChange(Jp_State.Jump);
+        }
+    }
+
+    private void StateChange(Jp_State newState)
+    {
+        // 現在のStateを離れるときの処理
+        if (currentState == Jp_State.Landing)
+        {
+            // Landing状態を離れるとき
+        }
+        else if (currentState == Jp_State.Jump)
+        {
+            // Jump状態を離れるとき
+        }
+
+        // 新しいStateに入るときの処理
+        if (newState == Jp_State.Landing)
+        {
+            // Landing状態に入るとき
+            animator.SetBool("IsJumping", false);
+        }
+        else if (newState == Jp_State.Jump)
+        {
+            // Jump状態に入るとき
+            Jumping();
+            animator.SetBool("IsJumping", true);
+        }
+        currentState = newState;
+        Debug.Log($"{currentState}");
+    }
+
     // 方向転換メソッド
     void Flip()
     {
@@ -90,7 +141,7 @@ public class JumpEnemy : MonoBehaviour, IDamageable
 
     private bool isGrounded()
     {
-        RaycastHit2D hit = Physics2D.Raycast(groundCheck.position, Vector2.down, groundCheckDistance, groundLayer);
+        RaycastHit2D hit = Physics2D.CircleCast(groundCheck.position, groundCheckDistance, Vector2.down);
 
         // デバッグ表示（Sceneビューで確認できる）
         Debug.DrawRay(groundCheck.position, Vector2.down * groundCheckDistance, Color.red);
