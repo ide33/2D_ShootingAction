@@ -6,16 +6,19 @@ public class PlayerHealth : MonoBehaviour, IDamageable
     [SerializeField] private int maxHealth = 3;  // 最大HP
     [SerializeField] private float invincibleDuration = 2.0f;  // 無敵時間
     [SerializeField] private float flashInterval = 0.1f;  // 点滅間隔
+    [SerializeField] private string HurtSE_NAME;  // HurtSEの名前
 
     private int currentHealth; // 現在のHP
     private bool isInvincible = false;  // 無敵中かどうか
-    private SpriteRenderer spriteRenderer;  // スプライトの変数
+    private SpriteRenderer[] spriteRenderers;  // スプライトの変数
     private Coroutine invincibleCoroutine;  // 無敵処理のコルーチン
 
     void Start()
     {
-        currentHealth = maxHealth;  // HPを初期化   
-        spriteRenderer = GetComponent<SpriteRenderer>();
+        currentHealth = maxHealth;  // HPを初期化
+
+        // 子オブジェクトすべてからSpriteRendererを取得
+        spriteRenderers = GetComponentsInChildren<SpriteRenderer>();
     }
 
     public void TakeDamage(int damage)
@@ -29,8 +32,10 @@ public class PlayerHealth : MonoBehaviour, IDamageable
 
         currentHealth -= damage;
 
-        GameObject director = GameObject.Find("GameDirector");
-        director.GetComponent<GameDirector>().DecreaseHp();  // HPゲージを減らす
+        if (HurtSE_NAME != null)
+        {
+            SoundManager.Instance.PlaySE(HurtSE_NAME);
+        }
 
         Debug.Log("プレイヤーがダメージを受けた");
 
@@ -56,14 +61,22 @@ public class PlayerHealth : MonoBehaviour, IDamageable
 
         while (elapsed < invincibleDuration)  // 無敵時間が終わるまで繰り返す
         {
-            // スプライトの透明度を切り替え
-            spriteRenderer.enabled = !spriteRenderer.enabled;
+            // 全てのSpriteRendererの表示状態を切り替え
+            foreach (var sr in spriteRenderers)
+            {
+                // 表示非表示の切り替え
+                sr.enabled = !sr.enabled;
+            }
 
-            yield return new WaitForSeconds(flashInterval);  // 一定時間停止
-            elapsed += flashInterval;  // 一時停止した時間をelapsedに足す
+            yield return new WaitForSeconds(flashInterval);
+            elapsed += flashInterval;
         }
 
-        spriteRenderer.enabled = true;  // 表示を戻す
+        // 無敵終了時に全て表示ONに戻す
+        foreach (var sr in spriteRenderers)
+        {
+            sr.enabled = true;
+        }
         isInvincible = false;  // 無敵解除
     }
 }

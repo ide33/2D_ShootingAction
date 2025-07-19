@@ -14,6 +14,8 @@ public class JumpEnemy : MonoBehaviour, IDamageable
     [SerializeField] private float groundCheckDistance = 0.1f;  // 地面判定の長さ
     [SerializeField] private int maxHealth = 2;  // 最大Hp
     [SerializeField] private int damageToPlayer = 1;  // プレイヤーに与えるダメージ
+    [SerializeField] private string JumpSE_NAME;  // JumpSEの名前
+    [SerializeField] private string HurtSE_NAME;  // HurtSEの名前
     [SerializeField] private Transform groundCheck;  // 接地判定の位置
     [SerializeField] private LayerMask groundLayer; // 地面レイヤーの指定
 
@@ -123,6 +125,11 @@ public class JumpEnemy : MonoBehaviour, IDamageable
             // Jump状態に入るとき
             Jumping();
             animator.SetBool("IsJumping", true);
+
+            if (JumpSE_NAME != null)
+            {
+                SoundManager.Instance.PlaySE(JumpSE_NAME);
+            }
         }
         currentState = newState;
         Debug.Log($"{currentState}");
@@ -175,10 +182,15 @@ public class JumpEnemy : MonoBehaviour, IDamageable
     public void TakeDamage(int damage)
     {
         currentHealth -= damage;
+        
+        if (HurtSE_NAME != null)
+        {
+            SoundManager.Instance.PlaySE(HurtSE_NAME);
+        }
 
         if (currentHealth <= 0)
-        {
-            Destroy(gameObject);
-        }
+            {
+                Destroy(gameObject);
+            }
     }
 }

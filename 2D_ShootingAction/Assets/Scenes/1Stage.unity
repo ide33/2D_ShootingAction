@@ -227,6 +227,10 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: -0.8854556
       objectReference: {fileID: 0}
+    - target: {fileID: 3535061581545570130, guid: e9720736d5b9bc44c8be9b409201b6f3, type: 3}
+      propertyPath: HurtSE_NAME
+      value: SE Damage
+      objectReference: {fileID: 0}
     - target: {fileID: 5144962108548552984, guid: e9720736d5b9bc44c8be9b409201b6f3, type: 3}
       propertyPath: m_LocalRotation.w
       value: 0.9715835
@@ -266,6 +270,22 @@ PrefabInstance:
     - target: {fileID: 5919758058077261019, guid: e9720736d5b9bc44c8be9b409201b6f3, type: 3}
       propertyPath: m_LocalRotation.z
       value: -0.447574
+      objectReference: {fileID: 0}
+    - target: {fileID: 7116487734450500100, guid: e9720736d5b9bc44c8be9b409201b6f3, type: 3}
+      propertyPath: SE_NAME
+      value: SE mini_bomb1_PlayerShot
+      objectReference: {fileID: 0}
+    - target: {fileID: 7116487734450500100, guid: e9720736d5b9bc44c8be9b409201b6f3, type: 3}
+      propertyPath: JumpSE_NAME
+      value: jump01_PlayerJump
+      objectReference: {fileID: 0}
+    - target: {fileID: 7116487734450500100, guid: e9720736d5b9bc44c8be9b409201b6f3, type: 3}
+      propertyPath: ATTACKSE_NAME
+      value: SE mini_bomb1_PlayerShot
+      objectReference: {fileID: 0}
+    - target: {fileID: 7116487734450500100, guid: e9720736d5b9bc44c8be9b409201b6f3, type: 3}
+      propertyPath: AttackSE_NAME
+      value: SE mini_bomb1_PlayerShot
       objectReference: {fileID: 0}
     - target: {fileID: 8025043149625782521, guid: e9720736d5b9bc44c8be9b409201b6f3, type: 3}
       propertyPath: m_LocalRotation.w
@@ -1307,7 +1327,7 @@ GameObject:
   - component: {fileID: 2045938469}
   m_Layer: 0
   m_Name: JumpEnemy1_0
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1449,6 +1469,8 @@ MonoBehaviour:
   groundCheckDistance: 0.2
   maxHealth: 2
   damageToPlayer: 1
+  JumpSE_NAME: jump06_EnemyJump
+  HurtSE_NAME: SE Damage
   groundCheck: {fileID: 1427374622}
   groundLayer:
     serializedVersion: 2

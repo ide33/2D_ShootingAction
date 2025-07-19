@@ -19,6 +19,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float jumpForce = 5f;  // ジャンプの強さ
     [SerializeField] private float shootCoolTime = 0.3f;  // 攻撃のクールタイム
     [SerializeField] private float checkGroundDistance = 0.1f;  // 地面までの距離
+    [SerializeField] private string AttackSE_NAME;  // AttackSEの名前
+    [SerializeField] private string JumpSE_NAME;  // JumpSEの名前
     [SerializeField] private LayerMask groundLayer;  // Groundレイヤー
     [SerializeField] Transform checkGround;  // 地面判定位置
     [SerializeField] Transform shootPoint;  // 弾の発射位置
@@ -194,6 +196,12 @@ public class PlayerController : MonoBehaviour
             }
 
             animator.SetInteger("AttackType", 2);
+
+            if (AttackSE_NAME != null)
+            {
+                SoundManager.Instance.PlaySE(AttackSE_NAME);
+            }
+
             lastAttack = Time.time;
             attackStarted = true;
         }
@@ -227,6 +235,12 @@ public class PlayerController : MonoBehaviour
             }
 
             animator.SetInteger("AttackType", 1);
+
+            if (AttackSE_NAME != null)
+            {
+                SoundManager.Instance.PlaySE(AttackSE_NAME);
+            }
+
             lastAttack = Time.time;
             attackStarted = true;
         }
@@ -260,6 +274,12 @@ public class PlayerController : MonoBehaviour
             }
 
             animator.SetInteger("AttackType", 3);
+
+            if (AttackSE_NAME != null)
+            {
+                SoundManager.Instance.PlaySE(AttackSE_NAME);
+            }
+
             lastAttack = Time.time;
             attackStarted = true;
         }
@@ -348,6 +368,11 @@ public class PlayerController : MonoBehaviour
             rb2d.AddForce(new Vector2(0, jumpForce), ForceMode2D.Impulse);  // ジャンプの力を加える
 
             animator.SetBool("IsJumping", true);
+
+            if (JumpSE_NAME != null)
+            {
+                SoundManager.Instance.PlaySE(JumpSE_NAME);
+            }
         }
         else if (newState == Player_State.UpAttack)
         {
@@ -355,11 +380,11 @@ public class PlayerController : MonoBehaviour
         }
         else if (currentState == Player_State.Attack)
         {
-            // Attack状態を離れるとき
+            // Attack状態に入るとき
         }
         else if (currentState == Player_State.DownAttack)
         {
-            // DownAttack状態を離れるとき
+            // DownAttack状態に入るとき
         }
         else if (newState == Player_State.Fall)
         {
