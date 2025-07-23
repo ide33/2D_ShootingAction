@@ -25,6 +25,12 @@ public class Ammo : MonoBehaviour
     [SerializeField] private UnionData AmmoUnionData; // この弾オブジェクトの合成要素
     [SerializeField] private CombinationRule combinationRule; // 合成ルールを設定
 
+    [Header("生成時のSE")]
+    [SerializeField] private string SE_Name_Spawn; // 生成時のSE
+
+    [Header("合成時のSE")]
+    [SerializeField] private string SE_Name_Union; // 合成時のSE
+
     public Action<float> OnUpdateMoveAction; // 移動の更新デリゲート
 
     private SpriteRenderer _spriteRenderer; // 向き確認用
@@ -51,6 +57,10 @@ public class Ammo : MonoBehaviour
         else if (collision.gameObject.CompareTag("Ground"))
         {
             Debug.Log("GroundHitAmmo");
+            if (SE_Name_Spawn != null)
+            {
+                SoundManager.Instance.PlaySE(SE_Name_Spawn);
+            }
             GroundHitAmmo(collision); // 衝突したオブジェクトが地面の場合、地面に着弾処理を実行
         }
         else if (collision.gameObject.CompareTag("Enemy"))
@@ -104,6 +114,11 @@ public class Ammo : MonoBehaviour
 
             // 弾の向きに応じてスプライトを反転させる
             newSpriteRenderer.flipX = _spriteRenderer.flipX;
+
+            if (SE_Name_Union != null)
+            {
+                SoundManager.Instance.PlaySE(SE_Name_Union);
+            }
 
             // 現在のオブジェクトと設置オブジェクトを削除
             Destroy(gameObject);

@@ -170,3 +170,5 @@ MonoBehaviour:
   AmmoUnionData:
     unionDataNeme: Floating
   combinationRule: {fileID: 11400000, guid: 47407759226d3ee4c8016d2b6a55101c, type: 2}
+  SE_Name_Spawn: "SE \u30DA\u30BF\u30C3_Spawn"
+  SE_Name_Union: "SE \u98DF\u3079\u7269\u3092\u30D1\u30AF\u30C3_Union"
