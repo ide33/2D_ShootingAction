@@ -37,6 +37,9 @@ public class RushEnemy : MonoBehaviour, IDamageable
 
     void Update()
     {
+        // GameOverだったら処理しない
+        if (GameManager.Instance.CurrentGameState == GameState.GameOver) return;
+
         switch (currentState)
         {
             case Re_State.Patrol:
@@ -204,7 +207,7 @@ public class RushEnemy : MonoBehaviour, IDamageable
     public void TakeDamage(int damage)
     {
         currentHealth -= damage;
-        
+
         if (currentHealth <= 0)
         {
             Destroy(gameObject);

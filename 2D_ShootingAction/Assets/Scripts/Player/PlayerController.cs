@@ -49,6 +49,9 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        // GameOverだったら処理しない
+        if (GameManager.Instance.CurrentGameState == GameState.GameOver) return;
+
         switch (currentState)
         {
             case Player_State.Idle:

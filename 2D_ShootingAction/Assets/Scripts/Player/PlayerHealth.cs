@@ -19,6 +19,13 @@ public class PlayerHealth : MonoBehaviour, IDamageable
 
         // 子オブジェクトすべてからSpriteRendererを取得
         spriteRenderers = GetComponentsInChildren<SpriteRenderer>();
+
+        // ステージ開始時にGameStateをリセット
+        if (GameManager.Instance.CurrentGameState == GameState.GameOver)
+        {
+            GameManager.Instance.CurrentGameState = GameState.Game;
+            GameManager.Instance.GameTimeStart();
+        }
     }
 
     public void TakeDamage(int damage)
@@ -43,7 +50,13 @@ public class PlayerHealth : MonoBehaviour, IDamageable
         if (currentHealth <= 0)
         {
             Debug.Log("プレイヤーが倒されました");
+
             // ゲームオーバー処理
+            GameManager.Instance.CurrentGameState = GameState.GameOver;
+
+            // GameManager.Instance.GameTimeStop();
+
+            return;
         }
 
         // 無敵時間を開始

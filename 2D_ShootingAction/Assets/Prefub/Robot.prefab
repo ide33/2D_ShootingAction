@@ -187,6 +187,8 @@ MonoBehaviour:
   jumpForce: 7
   shootCoolTime: 0.5
   checkGroundDistance: 0.2
+  AttackSE_NAME: SE mini_bomb1_PlayerShot
+  JumpSE_NAME: jump01_PlayerJump
   groundLayer:
     serializedVersion: 2
     m_Bits: 2112
@@ -211,6 +213,7 @@ MonoBehaviour:
   maxHealth: 3
   invincibleDuration: 1
   flashInterval: 0.1
+  HurtSE_NAME: SE Damage
 --- !u!1 &2548101769792437422
 GameObject:
   m_ObjectHideFlags: 0

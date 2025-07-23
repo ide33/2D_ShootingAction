@@ -43,6 +43,9 @@ public class JumpEnemy : MonoBehaviour, IDamageable
 
     void Update()
     {
+        // GameOverだったら処理しない
+        if (GameManager.Instance.CurrentGameState == GameState.GameOver) return;
+
         switch (currentState)
         {
             case Jp_State.Jump:
@@ -182,15 +185,15 @@ public class JumpEnemy : MonoBehaviour, IDamageable
     public void TakeDamage(int damage)
     {
         currentHealth -= damage;
-        
+
         if (HurtSE_NAME != null)
         {
             SoundManager.Instance.PlaySE(HurtSE_NAME);
         }
 
         if (currentHealth <= 0)
-            {
-                Destroy(gameObject);
-            }
+        {
+            Destroy(gameObject);
+        }
     }
 }
