@@ -13,10 +13,13 @@ public class PlayerHealth : MonoBehaviour, IDamageable
     private SpriteRenderer[] spriteRenderers;  // スプライトの変数
     private Coroutine invincibleCoroutine;  // 無敵処理のコルーチン
 
-    void Start()
+    void Awake()
     {
         currentHealth = maxHealth;  // HPを初期化
+    }
 
+    void Start()
+    {
         // 子オブジェクトすべてからSpriteRendererを取得
         spriteRenderers = GetComponentsInChildren<SpriteRenderer>();
 
@@ -91,5 +94,10 @@ public class PlayerHealth : MonoBehaviour, IDamageable
             sr.enabled = true;
         }
         isInvincible = false;  // 無敵解除
+    }
+
+    public int GetPlayerHealth()
+    {
+        return currentHealth;
     }
 }
