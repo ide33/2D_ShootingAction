@@ -12,17 +12,19 @@ public class GOALPoint : MonoBehaviour
     [SerializeField] private int UNLOCK_STAGE_NUMBER; // 解放するステージの番号
 
     [Header("ゴール時に再生するSE名を入力")]
-    [SerializeField] private string SE_Name; 
+    [SerializeField] private string SE_Name;
+    private bool isGOAL;
 
     private void Start()
     {
         GameManager.Instance.currentGameState = GameState.Game; // ゲーム状態をゲームに設定
+        isGOAL = false;
     }
 
     // オブジェクトすり抜け判定取得
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.gameObject.CompareTag("Player")) // プレイヤータグに接触したら
+        if (other.gameObject.CompareTag("Player") && !isGOAL) // プレイヤータグに接触し、ゴール前なら
         {
             if (StageManager.Instance != null && StageManager.Instance.IsStageUnlocked(UNLOCK_STAGE_NUMBER) == false)
             {
@@ -35,6 +37,8 @@ public class GOALPoint : MonoBehaviour
             }
 
             GameManager.Instance.CurrentGameState = GameState.Clear; // ゲーム状態をクリアに設定
+
+            isGOAL = true;
         }
     }
 }
