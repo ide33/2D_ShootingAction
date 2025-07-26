@@ -71,6 +71,7 @@ public class UIGOALText : MonoBehaviour
     // ゴールを確認したらUIを表示
     private IEnumerator GOALActive()
     {
+        yield return new WaitForSeconds(1f);
         while (GameManager.Instance.CurrentGameState != GameState.Clear) // ゴールするまで繰り返す
         {
             yield return null; // 次のフレームまで待機

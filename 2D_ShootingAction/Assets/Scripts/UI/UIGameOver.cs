@@ -60,6 +60,7 @@ public class UIGameOver : MonoBehaviour
 
     private IEnumerator GameOverUIActive()
     {
+        yield return new WaitForSeconds(1f);
         while (GameManager.Instance.CurrentGameState != GameState.GameOver) // ゲームオーバーまで繰り返す
         {
             yield return null; // 次のフレームまで待機
