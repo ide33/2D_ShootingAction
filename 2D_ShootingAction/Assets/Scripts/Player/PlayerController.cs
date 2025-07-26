@@ -52,6 +52,9 @@ public class PlayerController : MonoBehaviour
         // GameOverだったら処理しない
         if (GameManager.Instance.CurrentGameState == GameState.GameOver) return;
 
+        // GameClearだったら処理しない
+        if (GameManager.Instance.CurrentGameState == GameState.Clear) return;
+
         switch (currentState)
         {
             case Player_State.Idle:

@@ -21,7 +21,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
         spriteRenderers = GetComponentsInChildren<SpriteRenderer>();
 
         // ステージ開始時にGameStateをリセット
-        if (GameManager.Instance.CurrentGameState == GameState.GameOver)
+        if (GameManager.Instance.CurrentGameState == GameState.GameOver || GameManager.Instance.CurrentGameState == GameState.Clear)
         {
             GameManager.Instance.CurrentGameState = GameState.Game;
             GameManager.Instance.GameTimeStart();
